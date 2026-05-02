@@ -16,6 +16,32 @@ function MatchBadge({ score }) {
   );
 }
 
+function MiniVibeTile({ item }) {
+  const [imgLoaded, setImgLoaded] = useState(false);
+  const [imgError, setImgError] = useState(false);
+
+  return (
+    <div className="relative rounded-xl overflow-hidden aspect-square" style={{ background: 'transparent' }}>
+      <div className={`absolute inset-0 bg-gradient-to-br ${item.color}`} />
+      {item.img && !imgError && (
+        <img
+          src={item.img}
+          alt={item.label}
+          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
+          style={{ opacity: imgLoaded ? 1 : 0 }}
+          onLoad={() => setImgLoaded(true)}
+          onError={() => setImgError(true)}
+        />
+      )}
+      <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 60%)' }} />
+      <div className="absolute bottom-0 left-0 right-0 p-1 flex flex-col items-center">
+        <span className="leading-none" style={{ fontSize: '12px' }}>{item.emoji}</span>
+        <span className="text-white font-bold text-center leading-tight" style={{ fontSize: '7px' }}>{item.label}</span>
+      </div>
+    </div>
+  );
+}
+
 function UserCard({ user, onConnect, onPass, isTop }) {
   const [dragX, setDragX] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -148,14 +174,7 @@ function UserCard({ user, onConnect, onPass, isTop }) {
             <p className="text-xs font-bold text-white/35 uppercase tracking-wider mb-2">Vision Board</p>
             <div className="grid grid-cols-3 gap-1.5">
               {user.visionBoard.slice(0, 6).map((item, i) => (
-                <div
-                  key={i}
-                  className={`rounded-xl bg-gradient-to-br ${item.color} flex flex-col items-center justify-center p-2 aspect-square`}
-                >
-                  <span className="text-base sm:text-lg leading-none">{item.emoji}</span>
-                  <span className="text-white font-semibold text-center leading-tight mt-0.5"
-                    style={{ fontSize: '8px' }}>{item.label}</span>
-                </div>
+                <MiniVibeTile key={i} item={item} />
               ))}
             </div>
           </div>

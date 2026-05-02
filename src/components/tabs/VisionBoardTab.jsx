@@ -62,22 +62,43 @@ const BOARD_TABS = [
 ];
 
 function SearchResultItem({ item, isAdded, onAdd, onRemove }) {
+  const [imgError, setImgError] = useState(false);
+
   return (
     <button
       onClick={() => isAdded ? onRemove(item.label) : onAdd(item)}
-      className="flex items-center gap-3 p-3 rounded-xl transition-all group"
+      className="flex items-center gap-3 p-2.5 rounded-xl transition-all group text-left"
       style={{
         background: isAdded ? 'rgba(155,93,229,0.12)' : 'rgba(255,255,255,0.04)',
         border: `1px solid ${isAdded ? 'rgba(155,93,229,0.35)' : 'rgba(255,255,255,0.08)'}`,
       }}
     >
-      <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl bg-gradient-to-br ${item.color} flex-shrink-0`}>
-        {item.emoji}
+      {/* Photo thumbnail */}
+      <div className="relative w-11 h-11 rounded-xl overflow-hidden flex-shrink-0">
+        {item.img && !imgError ? (
+          <img
+            src={item.img}
+            alt={item.label}
+            className="w-full h-full object-cover"
+            onError={() => setImgError(true)}
+          />
+        ) : (
+          <div className={`w-full h-full bg-gradient-to-br ${item.color} flex items-center justify-center text-xl`}>
+            {item.emoji}
+          </div>
+        )}
+        {/* Emoji badge */}
+        <div className="absolute bottom-0 right-0 w-5 h-5 flex items-center justify-center rounded-tl-lg"
+          style={{ background: 'rgba(0,0,0,0.55)', fontSize: '11px' }}>
+          {item.emoji}
+        </div>
       </div>
-      <div className="text-left flex-1 min-w-0">
-        <p className="text-white text-sm font-semibold truncate">{item.label}</p>
-        <p className="text-white/40 text-xs">{item.category}</p>
+
+      <div className="flex-1 min-w-0">
+        <p className="text-white text-sm font-semibold truncate leading-tight">{item.label}</p>
+        <p className="text-white/35 text-xs mt-0.5">{item.category}</p>
       </div>
+
       <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs flex-shrink-0 transition-all ${isAdded ? 'bg-purple-500 text-white' : 'bg-white/10 text-white/40 group-hover:bg-white/20'}`}>
         {isAdded ? '✓' : '+'}
       </div>
@@ -85,53 +106,92 @@ function SearchResultItem({ item, isAdded, onAdd, onRemove }) {
   );
 }
 
+// Mosaic size pattern — first tile wide, fourth tile tall, rest square
+const TILE_SIZES = [
+  'col-span-2 row-span-1',  // 0 – wide
+  'col-span-1 row-span-1',  // 1
+  'col-span-1 row-span-1',  // 2
+  'col-span-1 row-span-2',  // 3 – tall
+  'col-span-1 row-span-1',  // 4
+  'col-span-1 row-span-1',  // 5
+  'col-span-1 row-span-1',  // 6
+  'col-span-2 row-span-1',  // 7 – wide
+];
+
 function VisionTile({ item, onRemove, index, isReadonly, isRedFlag }) {
   const [hovered, setHovered] = useState(false);
+  const [imgLoaded, setImgLoaded] = useState(false);
+  const [imgError, setImgError] = useState(false);
 
-  const sizes = [
-    'col-span-1 row-span-1',
-    'col-span-1 row-span-1',
-    'col-span-2 row-span-1',
-    'col-span-1 row-span-2',
-    'col-span-1 row-span-1',
-    'col-span-1 row-span-1',
-  ];
-  const sizeClass = isRedFlag ? 'col-span-1 row-span-1' : sizes[index % sizes.length];
+  const sizeClass = isRedFlag
+    ? 'col-span-1 row-span-1'
+    : TILE_SIZES[index % TILE_SIZES.length];
+
+  const minH = isRedFlag ? '80px' : '110px';
 
   return (
     <div
-      className={`vision-tile ${sizeClass}`}
-      style={{ minHeight: isRedFlag ? '80px' : '100px' }}
+      className={`vision-tile ${sizeClass} group`}
+      style={{ minHeight: minH }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
+      {/* ── Gradient fallback always behind ── */}
       <div className={`absolute inset-0 bg-gradient-to-br ${item.color}`} />
-      {isRedFlag && (
-        <div className="absolute inset-0 opacity-20"
-          style={{ backgroundImage: 'repeating-linear-gradient(45deg, rgba(0,0,0,0.1) 0px, rgba(0,0,0,0.1) 4px, transparent 4px, transparent 8px)' }} />
+
+      {/* ── Real photo ── */}
+      {item.img && !isRedFlag && !imgError && (
+        <img
+          src={item.img}
+          alt={item.label}
+          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
+          style={{ opacity: imgLoaded ? 1 : 0 }}
+          onLoad={() => setImgLoaded(true)}
+          onError={() => setImgError(true)}
+        />
       )}
-      <div className="absolute inset-0 flex flex-col items-center justify-center p-2">
-        <span className="text-2xl mb-1" style={{ filter: 'drop-shadow(0 1px 3px rgba(0,0,0,0.5))' }}>
+
+      {/* ── Red flag hatch overlay ── */}
+      {isRedFlag && (
+        <div className="absolute inset-0 opacity-25"
+          style={{ backgroundImage: 'repeating-linear-gradient(45deg,rgba(0,0,0,0.15) 0,rgba(0,0,0,0.15) 4px,transparent 4px,transparent 10px)' }} />
+      )}
+
+      {/* ── Dark gradient scrim so label is always readable ── */}
+      <div className="absolute inset-0"
+        style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.1) 55%, transparent 100%)' }} />
+
+      {/* ── Label ── */}
+      <div className="absolute bottom-0 left-0 right-0 p-2 flex items-end gap-1.5">
+        <span className="text-base leading-none flex-shrink-0"
+          style={{ filter: 'drop-shadow(0 1px 3px rgba(0,0,0,0.8))' }}>
           {item.emoji}
         </span>
-        <span className="text-white font-bold text-center leading-tight"
-          style={{ fontSize: '10px', textShadow: '0 1px 3px rgba(0,0,0,0.6)' }}>
+        <span className="text-white font-bold leading-tight"
+          style={{ fontSize: '11px', textShadow: '0 1px 4px rgba(0,0,0,0.9)', letterSpacing: '0.01em' }}>
           {item.label}
         </span>
       </div>
-      {!isReadonly && (
-        <div className="tile-overlay" style={{ opacity: hovered ? 1 : 0 }}>
-          <button
-            onClick={(e) => { e.stopPropagation(); onRemove(item.label); }}
-            className="w-8 h-8 rounded-full bg-black/70 text-white flex items-center justify-center text-sm hover:bg-red-500/80 transition-colors"
-          >
-            ×
-          </button>
+
+      {/* ── Discovery badge ── */}
+      {isReadonly && (
+        <div className="absolute top-1.5 right-1.5 w-5 h-5 rounded-full flex items-center justify-center text-xs"
+          style={{ background: 'rgba(0,245,212,0.8)', backdropFilter: 'blur(4px)' }}>
+          ✨
         </div>
       )}
-      {isReadonly && (
-        <div className="absolute top-1.5 right-1.5">
-          <span className="text-xs">✨</span>
+
+      {/* ── Remove overlay ── */}
+      {!isReadonly && (
+        <div
+          className="absolute inset-0 flex items-center justify-center rounded-xl transition-opacity duration-150"
+          style={{ background: 'rgba(0,0,0,0.45)', opacity: hovered ? 1 : 0, backdropFilter: 'blur(2px)' }}
+        >
+          <button
+            onClick={e => { e.stopPropagation(); onRemove(item.label); }}
+            className="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-lg transition-all hover:scale-110 active:scale-95"
+            style={{ background: 'rgba(255,45,120,0.85)', boxShadow: '0 2px 12px rgba(255,45,120,0.5)' }}
+          >×</button>
         </div>
       )}
     </div>
