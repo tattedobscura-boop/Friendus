@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
+import { useAuth } from '../../context/AuthContext';
 import { isContentSafe, getBlockedReason, sanitizeText } from '../../utils/contentFilter';
+import PremiumModal from '../PremiumModal';
 
 function EditableTagSection({ title, icon, tags, onAdd, onRemove, type, placeholder }) {
   const [input, setInput] = useState('');
@@ -85,6 +87,8 @@ function EditableTagSection({ title, icon, tags, onAdd, onRemove, type, placehol
 
 export default function ProfileTab() {
   const { profile, updateProfile } = useApp();
+  const { isPremium } = useAuth();
+  const [showPremium, setShowPremium] = useState(false);
 
   const [likes, setLikes] = useState(profile.likes || []);
   const [dislikes, setDislikes] = useState(profile.dislikes || []);
@@ -125,11 +129,23 @@ export default function ProfileTab() {
 
           <div className="flex-1">
             <h2 className="text-2xl font-black text-white">{profile.alias || 'Your Alias'}</h2>
-            <div className="flex items-center gap-1.5 mt-1">
+            <div className="flex items-center gap-1.5 mt-1 flex-wrap">
               <span className="w-1.5 h-1.5 rounded-full bg-green-400" />
               <span className="text-green-400 text-xs font-semibold">Face-free · Anonymous</span>
               <span className="text-white/20 mx-1">•</span>
               <span className="text-white/40 text-xs">{totalTags} interest tags</span>
+              {isPremium ? (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-white font-bold"
+                  style={{ background: 'linear-gradient(135deg, #ff2d78, #9b5de5)', fontSize: '10px' }}>
+                  ✨ Premium
+                </span>
+              ) : (
+                <button onClick={() => setShowPremium(true)}
+                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full font-semibold transition-all"
+                  style={{ background: 'rgba(155,93,229,0.15)', border: '1px solid rgba(155,93,229,0.3)', color: '#c77dff', fontSize: '10px' }}>
+                  ✨ Upgrade
+                </button>
+              )}
             </div>
 
             {/* Completeness bar */}
@@ -254,6 +270,27 @@ export default function ProfileTab() {
           ))}
         </div>
       </div>
+
+      {/* Premium upgrade card for free users */}
+      {!isPremium && (
+        <div className="px-5 pb-6">
+          <div className="rounded-2xl p-4 flex items-center gap-4"
+            style={{ background: 'linear-gradient(135deg, rgba(155,93,229,0.12), rgba(255,45,120,0.08))', border: '1px solid rgba(155,93,229,0.25)' }}>
+            <span className="text-3xl flex-shrink-0">✨</span>
+            <div className="flex-1 min-w-0">
+              <p className="text-white font-bold text-sm">Unlock Premium</p>
+              <p className="text-white/40 text-xs mt-0.5">Green &amp; Red Flag boards, unlimited cards, priority discovery</p>
+            </div>
+            <button onClick={() => setShowPremium(true)}
+              className="flex-shrink-0 px-4 py-2 rounded-xl font-bold text-white text-xs transition-all"
+              style={{ background: 'linear-gradient(135deg, #ff2d78, #9b5de5)', boxShadow: '0 2px 12px rgba(155,93,229,0.3)' }}>
+              $4.99/mo
+            </button>
+          </div>
+        </div>
+      )}
+
+      {showPremium && <PremiumModal onClose={() => setShowPremium(false)} />}
     </div>
   );
 }

@@ -1,7 +1,9 @@
 import React, { useState, useMemo } from 'react';
 import { useApp } from '../../context/AppContext';
+import { useAuth } from '../../context/AuthContext';
 import { VISION_SEARCH_ITEMS } from '../../utils/mockData';
 import { isContentSafe, getBlockedReason } from '../../utils/contentFilter';
+import PremiumModal from '../PremiumModal';
 
 // Green flag presets
 const GREEN_FLAG_PRESETS = [
@@ -444,9 +446,18 @@ export default function VisionBoardTab() {
     addToGreenFlagBoard, removeFromGreenFlagBoard,
     addToRedFlagBoard, removeFromRedFlagBoard,
   } = useApp();
+  const { isPremium } = useAuth();
 
   const [activeBoard, setActiveBoard] = useState('vibe');
   const [showPanel, setShowPanel] = useState(false);
+  const [showPremium, setShowPremium] = useState(false);
+  const [premiumFeature, setPremiumFeature] = useState('');
+
+  function requirePremium(featureName, fn) {
+    if (isPremium) { fn(); return; }
+    setPremiumFeature(featureName);
+    setShowPremium(true);
+  }
 
   const boardConfig = {
     vibe: { items: profile.vibeBoard, add: addToVibeBoard, remove: removeFromVibeBoard },
@@ -489,8 +500,16 @@ export default function VisionBoardTab() {
             return (
               <button
                 key={tab.id}
-                onClick={() => { setActiveBoard(tab.id); setShowPanel(false); }}
-                className="flex-1 flex flex-col items-center gap-0.5 py-2.5 rounded-xl transition-all"
+                onClick={() => {
+                  const isPremiumBoard = tab.id === 'greenflag' || tab.id === 'redflag';
+                  if (isPremiumBoard && !isPremium) {
+                    requirePremium(tab.label, () => {});
+                    return;
+                  }
+                  setActiveBoard(tab.id);
+                  setShowPanel(false);
+                }}
+                className="flex-1 flex flex-col items-center gap-0.5 py-2.5 rounded-xl transition-all relative"
                 style={{
                   background: isActive
                     ? tab.id === 'redflag'
@@ -516,6 +535,9 @@ export default function VisionBoardTab() {
                 }}>
                   {tab.label}
                 </span>
+                {(tab.id === 'greenflag' || tab.id === 'redflag') && !isPremium && (
+                  <span className="text-yellow-400" style={{ fontSize: '9px' }}>✨</span>
+                )}
                 {count > 0 && (
                   <span className="text-xs font-bold rounded-full px-1.5 py-0.5"
                     style={{
@@ -647,6 +669,10 @@ export default function VisionBoardTab() {
           </>
         )}
       </div>
+
+      {showPremium && (
+        <PremiumModal featureName={premiumFeature} onClose={() => setShowPremium(false)} />
+      )}
     </div>
   );
 }

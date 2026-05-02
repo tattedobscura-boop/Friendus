@@ -7,6 +7,7 @@ import ConnectionsTab from './tabs/ConnectionsTab';
 import ProfileTab from './tabs/ProfileTab';
 import CallOverlay from './CallOverlay';
 import AuthModal from './AuthModal';
+import PremiumModal from './PremiumModal';
 
 const TABS = [
   { id: 'discover', icon: '✦', label: 'Discover' },
@@ -17,10 +18,11 @@ const TABS = [
 
 export default function AppShell() {
   const { activeTab, setActiveTab, connections, notifications, activeCall } = useApp();
-  const { isLoggedIn, currentAccount, signOut } = useAuth();
+  const { isLoggedIn, currentAccount, signOut, isPremium } = useAuth();
   const connCount = connections.length;
-  const [showAuth, setShowAuth]   = useState(false);
-  const [showMenu, setShowMenu]   = useState(false);
+  const [showAuth, setShowAuth]       = useState(false);
+  const [showMenu, setShowMenu]       = useState(false);
+  const [showPremium, setShowPremium] = useState(false);
 
   return (
     <>
@@ -164,9 +166,28 @@ export default function AppShell() {
                           style={{ background: '#1a1a2e', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 8px 32px rgba(0,0,0,0.6)' }}
                         >
                           <div className="px-4 py-3 border-b border-white/5">
-                            <p className="text-white text-sm font-bold truncate">{currentAccount?.alias}</p>
+                            <div className="flex items-center gap-1.5 mb-0.5">
+                              <p className="text-white text-sm font-bold truncate">{currentAccount?.alias}</p>
+                              {isPremium
+                                ? <span className="text-xs px-1.5 py-0.5 rounded-full font-bold"
+                                    style={{ background: 'linear-gradient(135deg,#ff2d78,#9b5de5)', color: 'white', fontSize: '9px' }}>✨ PRO</span>
+                                : <span className="text-xs px-1.5 py-0.5 rounded-full font-medium"
+                                    style={{ background: 'rgba(255,255,255,0.07)', color: 'rgba(255,255,255,0.4)', fontSize: '9px' }}>FREE</span>
+                              }
+                            </div>
                             <p className="text-white/30 text-xs truncate">{currentAccount?.email}</p>
                           </div>
+                          {!isPremium && (
+                            <button
+                              onClick={() => { setShowPremium(true); setShowMenu(false); }}
+                              className="w-full text-left px-4 py-3 text-sm font-bold transition-all"
+                              style={{ color: '#c77dff' }}
+                              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(155,93,229,0.1)'; }}
+                              onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
+                            >
+                              ✨ Upgrade to Premium
+                            </button>
+                          )}
                           <button
                             onClick={() => { signOut(); setShowMenu(false); }}
                             className="w-full text-left px-4 py-3 text-sm transition-all"
@@ -251,6 +272,9 @@ export default function AppShell() {
 
       {/* Auth modal */}
       {showAuth && <AuthModal onClose={() => setShowAuth(false)} defaultTab="signin" />}
+
+      {/* Premium modal */}
+      {showPremium && <PremiumModal onClose={() => setShowPremium(false)} />}
     </>
   );
 }
