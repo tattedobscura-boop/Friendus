@@ -85,7 +85,7 @@ function UserCard({ user, onConnect, onPass, isTop, sharedLikes, sharedInterests
   const onMouseDown = useCallback((e) => { startX.current = e.clientX; startY.current = e.clientY; setIsDragging(true); }, []);
   const onMouseMove = useCallback((e) => { if (!isDragging || startX.current === null) return; setDragX(e.clientX - startX.current); }, [isDragging]);
   const onMouseUp = useCallback(() => {
-    if (isDragging) { if (dragX > 80) onConnect(user); else if (dragX < -80) onPass(); }
+    if (isDragging) { if (dragX > 80) onConnect(user); else if (dragX < -80) onPass(user); }
     setIsDragging(false); setDragX(0); startX.current = null;
   }, [isDragging, dragX, onConnect, onPass, user]);
 
@@ -101,7 +101,7 @@ function UserCard({ user, onConnect, onPass, isTop, sharedLikes, sharedInterests
     if (!isScrolling.current) { e.preventDefault(); setDragX(dx); }
   }, []);
   const onTouchEnd = useCallback(() => {
-    if (!isScrolling.current && isDragging) { if (dragX > 60) onConnect(user); else if (dragX < -60) onPass(); }
+    if (!isScrolling.current && isDragging) { if (dragX > 60) onConnect(user); else if (dragX < -60) onPass(user); }
     setIsDragging(false); setDragX(0); startX.current = null; isScrolling.current = false;
   }, [isDragging, dragX, onConnect, onPass, user]);
 
@@ -142,8 +142,23 @@ function UserCard({ user, onConnect, onPass, isTop, sharedLikes, sharedInterests
                 style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.35)' }}>{user.avatar}</div>
               <div className="min-w-0">
                 <h3 className="text-lg sm:text-xl font-black text-white truncate">{user.alias}</h3>
-                <p className="text-white/40 text-xs flex items-center gap-1 mt-0.5">
-                  <span>🔒</span> Anonymous · {user.personality}
+                <p className="text-white/40 text-xs flex items-center gap-1.5 mt-0.5 flex-wrap">
+                  <span>🔒</span>
+                  <span>Anonymous</span>
+                  {user.distance != null && (
+                    <>
+                      <span className="text-white/20">·</span>
+                      <span className="flex items-center gap-0.5" style={{ color: user.distance <= 30 ? '#00f5d4' : 'rgba(255,255,255,0.35)' }}>
+                        📍 {user.distance < 1000 ? `${user.distance} mi` : 'Worldwide'}
+                      </span>
+                    </>
+                  )}
+                  {user.personality && (
+                    <>
+                      <span className="text-white/20">·</span>
+                      <span>{user.personality}</span>
+                    </>
+                  )}
                 </p>
               </div>
             </div>
@@ -239,22 +254,35 @@ function UserCard({ user, onConnect, onPass, isTop, sharedLikes, sharedInterests
   );
 }
 
+const LOCATION_OPTIONS = [
+  { id: 'nearby', label: 'Within 30 mi', icon: '📍' },
+  { id: 'anywhere', label: 'Anywhere',   icon: '🌍' },
+];
+
 export default function DiscoverTab() {
   const { addConnection, profile } = useApp();
-  const [users, setUsers] = useState([...MOCK_USERS]);
+  const [allUsers] = useState([...MOCK_USERS]);
+  const [dismissed, setDismissed] = useState([]);
   const [matchAnimation, setMatchAnimation] = useState(null);
   const [passed, setPassed] = useState(0);
+  const [locationFilter, setLocationFilter] = useState('nearby');
+
+  const users = allUsers.filter(u => {
+    if (dismissed.includes(u.id)) return false;
+    if (locationFilter === 'nearby') return (u.distance ?? 0) <= 30;
+    return true;
+  });
 
   const handleConnect = useCallback((user) => {
     addConnection(user);
     setMatchAnimation(user.alias);
     setTimeout(() => setMatchAnimation(null), 2500);
-    setUsers(prev => prev.slice(1));
+    setDismissed(prev => [...prev, user.id]);
   }, [addConnection]);
 
-  const handlePass = useCallback(() => {
+  const handlePass = useCallback((user) => {
     setPassed(p => p + 1);
-    setUsers(prev => prev.slice(1));
+    setDismissed(prev => [...prev, user.id]);
   }, []);
 
   const topUser = users[0];
@@ -265,7 +293,7 @@ export default function DiscoverTab() {
     <div className="flex flex-col h-full min-h-0">
       {/* Tab header */}
       <div className="flex-shrink-0 px-4 sm:px-5 pt-4 pb-3">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mb-2">
           <div>
             <h2 className="text-lg sm:text-xl font-black text-white leading-tight">Discover</h2>
             <p className="text-white/40 text-xs sm:text-sm">Find friends by vibe, not by face</p>
@@ -273,12 +301,35 @@ export default function DiscoverTab() {
           <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-semibold flex-shrink-0"
             style={{ background: 'rgba(0,245,212,0.1)', border: '1px solid rgba(0,245,212,0.2)', color: '#00f5d4' }}>
             <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-            {users.length} nearby
+            {users.length} {locationFilter === 'nearby' ? 'nearby' : 'worldwide'}
           </div>
         </div>
 
+        {/* Location filter toggle */}
+        <div className="flex gap-1.5 mb-2">
+          {LOCATION_OPTIONS.map(opt => {
+            const active = locationFilter === opt.id;
+            return (
+              <button
+                key={opt.id}
+                onClick={() => setLocationFilter(opt.id)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all"
+                style={{
+                  background: active ? 'linear-gradient(135deg, #ff2d78, #9b5de5)' : 'rgba(255,255,255,0.06)',
+                  color: active ? 'white' : 'rgba(255,255,255,0.45)',
+                  border: '1px solid ' + (active ? 'transparent' : 'rgba(255,255,255,0.1)'),
+                  boxShadow: active ? '0 2px 12px rgba(255,45,120,0.25)' : 'none',
+                }}
+              >
+                <span>{opt.icon}</span>
+                {opt.label}
+              </button>
+            );
+          })}
+        </div>
+
         {profile.likes.length > 0 && (
-          <div className="mt-2 flex items-center gap-2 overflow-x-auto pb-0.5">
+          <div className="flex items-center gap-2 overflow-x-auto pb-0.5">
             <span className="text-white/30 text-xs flex-shrink-0">Your loves:</span>
             {profile.likes.slice(0, 4).map((l, i) => (
               <span key={i} className="tag-like flex-shrink-0 text-xs">{l}</span>
@@ -296,17 +347,31 @@ export default function DiscoverTab() {
               <UserCard key={users[1].id} user={users[1]} onConnect={() => {}} onPass={() => {}} isTop={false}
                 sharedLikes={[]} sharedInterests={[]} />
             )}
-            <UserCard key={users[0].id} user={users[0]} onConnect={handleConnect} onPass={handlePass} isTop
+            <UserCard key={users[0].id} user={users[0]} onConnect={handleConnect}
+              onPass={() => handlePass(users[0])} isTop
               sharedLikes={sharedLikes} sharedInterests={sharedInterests} />
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center h-full text-center px-6">
-            <div className="text-5xl mb-4">🎉</div>
-            <h3 className="text-white font-black text-xl mb-2">You've seen everyone!</h3>
-            <p className="text-white/40 text-sm mb-6">You passed {passed} profiles. More joining every day.</p>
-            <button onClick={() => { setUsers([...MOCK_USERS]); setPassed(0); }} className="btn-primary px-6 py-3 text-sm">
-              Start Over
-            </button>
+            {locationFilter === 'nearby' ? (
+              <>
+                <div className="text-5xl mb-4">📍</div>
+                <h3 className="text-white font-black text-xl mb-2">No one nearby right now</h3>
+                <p className="text-white/40 text-sm mb-6">No profiles within 30 miles. Try expanding to anywhere.</p>
+                <button onClick={() => setLocationFilter('anywhere')} className="btn-primary px-6 py-3 text-sm">
+                  🌍 Search Anywhere
+                </button>
+              </>
+            ) : (
+              <>
+                <div className="text-5xl mb-4">🎉</div>
+                <h3 className="text-white font-black text-xl mb-2">You've seen everyone!</h3>
+                <p className="text-white/40 text-sm mb-6">You passed {passed} {passed === 1 ? 'profile' : 'profiles'}. More joining every day.</p>
+                <button onClick={() => setDismissed([])} className="btn-primary px-6 py-3 text-sm">
+                  Start Over
+                </button>
+              </>
+            )}
           </div>
         )}
       </div>
