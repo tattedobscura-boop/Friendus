@@ -1,4 +1,5 @@
 import React from 'react';
+import { AuthProvider } from './context/AuthContext';
 import { AppProvider, useApp } from './context/AppContext';
 import LandingScreen from './components/LandingScreen';
 import OnboardingScreen from './components/OnboardingScreen';
@@ -17,8 +18,10 @@ function AppRouter() {
 
 export default function App() {
   return (
-    <AppProvider>
-      <AppRouter />
-    </AppProvider>
+    <AuthProvider>
+      <AppProvider>
+        <AppRouter />
+      </AppProvider>
+    </AuthProvider>
   );
 }

@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect, useRef } from 'react';
+import { useAuth } from './AuthContext';
 
 const AppContext = createContext(null);
 
@@ -42,28 +43,105 @@ const DEMO_CONNECTIONS = [
   },
 ];
 
+const DEFAULT_PROFILE = {
+  alias: '',
+  likes: [],
+  dislikes: [],
+  interests: [],
+  values: [],
+  vibeBoard: [],
+  discoveryBoard: [],
+  redFlagBoard: [],
+  greenFlagBoard: [],
+};
+
 export function AppProvider({ children }) {
-  const [currentScreen, setCurrentScreen] = useState('landing');
+  const { isLoggedIn, loadAppData, saveAppData, currentEmail, currentAccount } = useAuth();
+
+  // Derive initial state from saved account data (if logged in)
+  function getInitialState() {
+    if (isLoggedIn) {
+      const saved = loadAppData();
+      if (saved) return saved;
+    }
+    return null;
+  }
+
+  const savedState = getInitialState();
+
+  const [currentScreen, setCurrentScreen] = useState(() => {
+    if (isLoggedIn && savedState?.profileComplete) return 'app';
+    return 'landing';
+  });
   const [activeTab, setActiveTab] = useState('discover');
-  const [profile, setProfile] = useState({
-    alias: '',
-    likes: [],
-    dislikes: [],
-    interests: [],
-    values: [],
-    vibeBoard: [],
-    discoveryBoard: [],
-    redFlagBoard: [],
-    greenFlagBoard: [],
+
+  const [profile, setProfile] = useState(() => {
+    if (savedState?.profile) return savedState.profile;
+    if (isLoggedIn && currentAccount?.alias) {
+      return { ...DEFAULT_PROFILE, alias: currentAccount.alias };
+    }
+    return { ...DEFAULT_PROFILE };
   });
 
-  const [connections, setConnections] = useState(DEMO_CONNECTIONS);
+  const [connections, setConnections] = useState(() => {
+    if (savedState?.connections) return savedState.connections;
+    return DEMO_CONNECTIONS;
+  });
+
   const [notifications, setNotifications] = useState(2);
-  const [messageStore, setMessageStore] = useState({});
-  const [activeCall, setActiveCall] = useState(null); // { user, type: 'voice'|'video' }
+
+  const [messageStore, setMessageStore] = useState(() => {
+    return savedState?.messageStore || {};
+  });
+
+  const [activeCall, setActiveCall] = useState(null);
+
+  // Track whether onboarding has been completed for this account
+  const [profileComplete, setProfileComplete] = useState(() => {
+    return savedState?.profileComplete || false;
+  });
+
+  // Persist to localStorage whenever key state changes (debounced)
+  const saveTimer = useRef(null);
+  useEffect(() => {
+    if (!isLoggedIn) return;
+    clearTimeout(saveTimer.current);
+    saveTimer.current = setTimeout(() => {
+      saveAppData({ profile, connections, messageStore, profileComplete });
+    }, 800);
+    return () => clearTimeout(saveTimer.current);
+  }, [profile, connections, messageStore, profileComplete, isLoggedIn, saveAppData]);
+
+  // When a different account logs in, reload their saved data
+  useEffect(() => {
+    if (!isLoggedIn) return;
+    const saved = loadAppData();
+    if (saved) {
+      if (saved.profile) setProfile(saved.profile);
+      if (saved.connections) setConnections(saved.connections);
+      if (saved.messageStore) setMessageStore(saved.messageStore);
+      if (saved.profileComplete) {
+        setProfileComplete(true);
+        setCurrentScreen('app');
+      } else {
+        setCurrentScreen('landing');
+      }
+    } else {
+      // Fresh account — pre-fill alias from account
+      setProfile(p => ({ ...DEFAULT_PROFILE, alias: currentAccount?.alias || '' }));
+      setConnections(DEMO_CONNECTIONS);
+      setMessageStore({});
+      setProfileComplete(false);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentEmail]);
 
   const updateProfile = useCallback((updates) => {
     setProfile(prev => ({ ...prev, ...updates }));
+  }, []);
+
+  const completeProfile = useCallback(() => {
+    setProfileComplete(true);
   }, []);
 
   // --- Vibe Board ---
@@ -77,7 +155,6 @@ export function AppProvider({ children }) {
     setProfile(prev => ({ ...prev, vibeBoard: prev.vibeBoard.filter(v => v.label !== label) }));
   }, []);
 
-  // Legacy compat for onboarding
   const addToBoard = addToVibeBoard;
   const removeFromBoard = removeFromVibeBoard;
 
@@ -144,6 +221,7 @@ export function AppProvider({ children }) {
       currentScreen, setCurrentScreen,
       activeTab, setActiveTab,
       profile, updateProfile,
+      profileComplete, completeProfile,
       addToBoard, removeFromBoard,
       addToVibeBoard, removeFromVibeBoard,
       addToDiscoveryBoard, removeFromDiscoveryBoard,

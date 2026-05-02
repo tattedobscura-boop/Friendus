@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
+import { useAuth } from '../context/AuthContext';
+import AuthModal from './AuthModal';
 
 const AGE_GATE_KEY = 'vibematch_age_verified';
 
@@ -118,7 +120,10 @@ const FLOATING_TAGS = [
 
 export default function LandingScreen() {
   const { setCurrentScreen } = useApp();
+  const { isLoggedIn, currentAccount, signOut } = useAuth();
   const [hoveredCta, setHoveredCta] = useState(false);
+  const [showAuth, setShowAuth] = useState(false);
+  const [authTab, setAuthTab]   = useState('signup');
   const [ageVerified, setAgeVerified] = useState(
     () => sessionStorage.getItem(AGE_GATE_KEY) === 'true'
   );
@@ -127,6 +132,17 @@ export default function LandingScreen() {
     sessionStorage.setItem(AGE_GATE_KEY, 'true');
     setAgeVerified(true);
   };
+
+  function openAuth(tab) {
+    setAuthTab(tab);
+    setShowAuth(true);
+  }
+
+  function handleAuthClose(result) {
+    setShowAuth(false);
+    // If signed in/up successfully, go straight to onboarding
+    if (result === 'success') setCurrentScreen('onboarding');
+  }
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] relative overflow-hidden flex flex-col">
@@ -167,12 +183,26 @@ export default function LandingScreen() {
           </div>
           <span className="text-white font-bold text-lg tracking-tight">FriendUs</span>
         </div>
-        <button
-          className="btn-ghost text-sm px-5 py-2"
-          onClick={() => setCurrentScreen('onboarding')}
-        >
-          Sign In
-        </button>
+        {isLoggedIn ? (
+          <div className="flex items-center gap-2">
+            <span className="text-white/50 text-sm hidden sm:inline">
+              Hey, <span className="text-white font-semibold">{currentAccount?.alias}</span> 👋
+            </span>
+            <button
+              className="btn-primary text-sm px-5 py-2"
+              onClick={() => setCurrentScreen('app')}
+            >Enter App →</button>
+            <button className="btn-ghost text-xs px-3 py-2" onClick={signOut}>Sign Out</button>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2">
+            <button className="btn-ghost text-sm px-4 py-2" onClick={() => openAuth('signin')}>Sign In</button>
+            <button
+              className="btn-primary text-sm px-5 py-2"
+              onClick={() => openAuth('signup')}
+            >Create Account</button>
+          </div>
+        )}
       </header>
 
       {/* Hero */}
@@ -204,7 +234,7 @@ export default function LandingScreen() {
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-8 sm:mb-14 w-full max-w-xs sm:max-w-none sm:w-auto">
           <button
             className="btn-primary px-7 py-3.5 sm:py-4 text-sm sm:text-base font-bold"
-            onClick={() => setCurrentScreen('onboarding')}
+            onClick={() => isLoggedIn ? setCurrentScreen('onboarding') : openAuth('signup')}
             onMouseEnter={() => setHoveredCta(true)}
             onMouseLeave={() => setHoveredCta(false)}
           >
@@ -212,9 +242,9 @@ export default function LandingScreen() {
           </button>
           <button
             className="btn-ghost px-7 py-3.5 sm:py-4 text-sm sm:text-base"
-            onClick={() => setCurrentScreen('onboarding')}
+            onClick={() => isLoggedIn ? setCurrentScreen('app') : openAuth('signin')}
           >
-            See How It Works
+            {isLoggedIn ? 'Go to App →' : 'Sign In'}
           </button>
         </div>
 
@@ -257,6 +287,8 @@ export default function LandingScreen() {
           ))}
         </div>
       </div>
+
+      {showAuth && <AuthModal onClose={handleAuthClose} defaultTab={authTab} />}
     </div>
   );
 }

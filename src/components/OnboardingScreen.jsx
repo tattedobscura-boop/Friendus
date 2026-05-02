@@ -199,7 +199,7 @@ function ValueChips({ onAdd, added }) {
 }
 
 export default function OnboardingScreen() {
-  const { setCurrentScreen, updateProfile } = useApp();
+  const { setCurrentScreen, updateProfile, completeProfile } = useApp();
   const [step, setStep] = useState(0);
   const [alias, setAlias] = useState('');
   const [aliasError, setAliasError] = useState('');
@@ -222,6 +222,7 @@ export default function OnboardingScreen() {
     if (stepKey === 'likes' && likes.length < 1) return;
     if (stepKey === 'done') {
       updateProfile({ alias, likes, dislikes, interests, values });
+      completeProfile();
       setCurrentScreen('app');
       return;
     }

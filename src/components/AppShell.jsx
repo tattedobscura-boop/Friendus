@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
+import { useAuth } from '../context/AuthContext';
 import DiscoverTab from './tabs/DiscoverTab';
 import VisionBoardTab from './tabs/VisionBoardTab';
 import ConnectionsTab from './tabs/ConnectionsTab';
 import ProfileTab from './tabs/ProfileTab';
 import CallOverlay from './CallOverlay';
+import AuthModal from './AuthModal';
 
 const TABS = [
   { id: 'discover', icon: '✦', label: 'Discover' },
@@ -15,7 +17,10 @@ const TABS = [
 
 export default function AppShell() {
   const { activeTab, setActiveTab, connections, notifications, activeCall } = useApp();
+  const { isLoggedIn, currentAccount, signOut } = useAuth();
   const connCount = connections.length;
+  const [showAuth, setShowAuth]   = useState(false);
+  const [showMenu, setShowMenu]   = useState(false);
 
   return (
     <>
@@ -139,6 +144,51 @@ export default function AppShell() {
                     >{notifications}</span>
                   </div>
                 )}
+
+                {/* Account button */}
+                {isLoggedIn ? (
+                  <div className="relative">
+                    <button
+                      onClick={() => setShowMenu(s => !s)}
+                      className="w-8 h-8 rounded-xl flex items-center justify-center font-bold text-xs text-white transition-all"
+                      style={{ background: 'linear-gradient(135deg, #ff2d78, #9b5de5)', flexShrink: 0 }}
+                      title={currentAccount?.alias}
+                    >
+                      {(currentAccount?.alias || '?')[0].toUpperCase()}
+                    </button>
+                    {showMenu && (
+                      <>
+                        <div className="fixed inset-0 z-40" onClick={() => setShowMenu(false)} />
+                        <div
+                          className="absolute right-0 top-10 z-50 rounded-2xl overflow-hidden w-48 py-1"
+                          style={{ background: '#1a1a2e', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 8px 32px rgba(0,0,0,0.6)' }}
+                        >
+                          <div className="px-4 py-3 border-b border-white/5">
+                            <p className="text-white text-sm font-bold truncate">{currentAccount?.alias}</p>
+                            <p className="text-white/30 text-xs truncate">{currentAccount?.email}</p>
+                          </div>
+                          <button
+                            onClick={() => { signOut(); setShowMenu(false); }}
+                            className="w-full text-left px-4 py-3 text-sm transition-all"
+                            style={{ color: '#ff6b9d' }}
+                            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,45,120,0.08)'; }}
+                            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
+                          >
+                            🚪 Sign Out
+                          </button>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setShowAuth(true)}
+                    className="px-3 py-1.5 rounded-xl text-xs font-bold text-white transition-all"
+                    style={{ background: 'linear-gradient(135deg, #ff2d78, #9b5de5)', boxShadow: '0 2px 10px rgba(155,93,229,0.3)' }}
+                  >
+                    Sign In
+                  </button>
+                )}
               </div>
             </header>
 
@@ -198,6 +248,9 @@ export default function AppShell() {
 
       {/* Call overlay — outside shell so it covers everything */}
       {activeCall && <CallOverlay />}
+
+      {/* Auth modal */}
+      {showAuth && <AuthModal onClose={() => setShowAuth(false)} defaultTab="signin" />}
     </>
   );
 }
