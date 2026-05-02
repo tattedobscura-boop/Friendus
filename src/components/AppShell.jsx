@@ -104,7 +104,7 @@ export default function AppShell() {
                   className="w-7 h-7 rounded-lg flex items-center justify-center text-sm font-black text-white"
                   style={{ background: 'linear-gradient(135deg, #ff2d78, #9b5de5)' }}
                 >✦</div>
-                <span className="text-white font-black tracking-tight text-sm">VibeMatch</span>
+                <span className="text-white font-black tracking-tight text-sm">FriendUs</span>
               </div>
               {/* Desktop: show active tab title */}
               <div className="hidden lg:flex items-center gap-2">

@@ -255,7 +255,7 @@ export default function OnboardingScreen() {
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-lg flex items-center justify-center text-sm"
             style={{ background: 'linear-gradient(135deg, #ff2d78, #9b5de5)' }}>✦</div>
-          <span className="text-white font-bold text-sm">VibeMatch</span>
+          <span className="text-white font-bold text-sm">FriendUs</span>
         </div>
         <div className="text-white/30 text-xs sm:text-sm font-medium">{step + 1} / {STEPS.length}</div>
       </header>

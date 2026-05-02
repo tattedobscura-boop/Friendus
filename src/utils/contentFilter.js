@@ -46,7 +46,7 @@ export function getBlockedReason(text) {
   const lower = text.toLowerCase().trim();
   for (const term of BLOCKED_TERMS) {
     if (lower.includes(term)) {
-      return `"${term}" is not allowed on VibeMatch.`;
+      return `"${term}" is not allowed on FriendUs.`;
     }
   }
   return null;

@@ -161,7 +161,7 @@ export default function ProfileTab() {
             color: 'rgba(255, 45, 120, 0.8)',
           }}>
           <span className="text-lg">🙈</span>
-          <span>Your face is never shown here — not now, not ever. Only your interests and personality matter on VibeMatch.</span>
+          <span>Your face is never shown here — not now, not ever. Only your interests and personality matter on FriendUs.</span>
         </div>
       </div>
 

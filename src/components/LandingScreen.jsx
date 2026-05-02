@@ -15,7 +15,7 @@ function AgeGate({ onConfirm, onDecline }) {
           <div className="text-5xl mb-4">🔒</div>
           <h2 className="text-white font-black text-2xl mb-3">Access Restricted</h2>
           <p className="text-white/50 text-sm leading-relaxed">
-            You must be 18 or older to use VibeMatch. Come back when you're ready.
+            You must be 18 or older to use FriendUs. Come back when you're ready.
           </p>
         </div>
       </div>
@@ -36,7 +36,7 @@ function AgeGate({ onConfirm, onDecline }) {
           <div className="flex items-center gap-2 mb-6">
             <div className="w-9 h-9 rounded-xl flex items-center justify-center text-lg font-bold"
               style={{ background: 'linear-gradient(135deg, #ff2d78, #9b5de5)' }}>✦</div>
-            <span className="text-white font-black text-lg tracking-tight">VibeMatch</span>
+            <span className="text-white font-black text-lg tracking-tight">FriendUs</span>
           </div>
 
           {/* Heading */}
@@ -44,7 +44,7 @@ function AgeGate({ onConfirm, onDecline }) {
             Before you enter
           </h2>
           <p className="text-white/50 text-sm mb-6 leading-relaxed">
-            VibeMatch is a platform for adults. You must confirm your age and agree to our terms to continue.
+            FriendUs is a platform for adults. You must confirm your age and agree to our terms to continue.
           </p>
 
           {/* Age confirmation */}
@@ -74,7 +74,7 @@ function AgeGate({ onConfirm, onDecline }) {
             style={{ background: 'rgba(0,245,212,0.05)', border: '1px solid rgba(0,245,212,0.15)' }}>
             <span className="text-base flex-shrink-0 mt-0.5">🛡️</span>
             <p className="text-xs leading-relaxed" style={{ color: 'rgba(0,245,212,0.8)' }}>
-              VibeMatch is a <strong>best-friends platform</strong>. Your face is never shown — only your interests and vibe matter. Content is filtered and monitored to keep this space safe and genuine.
+              FriendUs is a <strong>best-friends platform</strong>. Your face is never shown — only your interests and vibe matter. Content is filtered and monitored to keep this space safe and genuine.
             </p>
           </div>
 
@@ -90,7 +90,7 @@ function AgeGate({ onConfirm, onDecline }) {
                 cursor: checked ? 'pointer' : 'not-allowed',
                 boxShadow: checked ? '0 4px 20px rgba(155,93,229,0.35)' : 'none',
               }}>
-              I'm 18+ — Enter VibeMatch ✦
+              I'm 18+ — Enter FriendUs ✦
             </button>
             <button
               onClick={() => { setDeclined(true); onDecline(); }}
@@ -165,7 +165,7 @@ export default function LandingScreen() {
             style={{ background: 'linear-gradient(135deg, #ff2d78, #9b5de5)' }}>
             ✦
           </div>
-          <span className="text-white font-bold text-lg tracking-tight">VibeMatch</span>
+          <span className="text-white font-bold text-lg tracking-tight">FriendUs</span>
         </div>
         <button
           className="btn-ghost text-sm px-5 py-2"
@@ -194,7 +194,7 @@ export default function LandingScreen() {
         </h1>
 
         <p className="text-sm sm:text-base lg:text-lg text-white/50 max-w-xl mb-3 sm:mb-5 leading-relaxed">
-          VibeMatch is built for people looking for a <strong className="text-white/80">real, deep friendship</strong> —
+          FriendUs is built for people looking for a <strong className="text-white/80">real, deep friendship</strong> —
           not a photo, not a look. Just shared passions, honest interests, and genuine connection.
         </p>
         <p className="text-xs sm:text-sm text-white/35 max-w-md mb-6 sm:mb-10 leading-relaxed">
