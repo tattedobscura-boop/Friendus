@@ -4,16 +4,17 @@ import DiscoverTab from './tabs/DiscoverTab';
 import VisionBoardTab from './tabs/VisionBoardTab';
 import ConnectionsTab from './tabs/ConnectionsTab';
 import ProfileTab from './tabs/ProfileTab';
+import CallOverlay from './CallOverlay';
 
 const TABS = [
   { id: 'discover', icon: '✦', label: 'Discover' },
-  { id: 'board', icon: '🎨', label: 'Board' },
+  { id: 'board', icon: '🎨', label: 'Boards' },
   { id: 'connections', icon: '🤝', label: 'Friends' },
   { id: 'profile', icon: '🎭', label: 'Profile' },
 ];
 
 export default function AppShell() {
-  const { activeTab, setActiveTab, profile, connections, notifications } = useApp();
+  const { activeTab, setActiveTab, profile, connections, notifications, activeCall } = useApp();
 
   const connCount = connections.length;
 
@@ -69,6 +70,9 @@ export default function AppShell() {
           {activeTab === 'profile' && <div className="h-full overflow-y-auto"><ProfileTab /></div>}
         </div>
       </main>
+
+      {/* Call overlay */}
+      {activeCall && <CallOverlay />}
 
       {/* Bottom nav */}
       <nav className="relative z-20 border-t border-white/5 px-2 py-2 flex items-center justify-around"

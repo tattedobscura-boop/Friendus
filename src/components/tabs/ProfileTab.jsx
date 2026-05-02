@@ -101,7 +101,7 @@ export default function ProfileTab() {
     (likes.length > 0 ? 30 : 0) +
     (dislikes.length > 0 ? 15 : 0) +
     (interests.length > 0 ? 20 : 0) +
-    (profile.visionBoard?.length > 0 ? 20 : 0) +
+    (profile.vibeBoard?.length > 0 ? 20 : 0) +
     Math.min(15, totalTags)
   ));
 
@@ -214,12 +214,12 @@ export default function ProfileTab() {
       </div>
 
       {/* Vision board preview */}
-      {profile.visionBoard?.length > 0 && (
+      {profile.vibeBoard?.length > 0 && (
         <div className="px-5 pb-8">
           <div className="p-4 rounded-2xl" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
             <p className="text-xs font-bold text-white/50 uppercase tracking-wider mb-3">🎨 Vision Board Preview</p>
             <div className="grid grid-cols-4 gap-2">
-              {profile.visionBoard.slice(0, 8).map((item, i) => (
+              {profile.vibeBoard.slice(0, 8).map((item, i) => (
                 <div key={i} className={`rounded-xl bg-gradient-to-br ${item.color} flex flex-col items-center justify-center p-2 aspect-square`}>
                   <span className="text-xl">{item.emoji}</span>
                   <span className="text-white font-semibold text-center leading-tight mt-1"
