@@ -217,14 +217,14 @@ export default function OnboardingScreen() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] flex flex-col relative overflow-hidden">
-      <div className="absolute inset-0 bg-grid opacity-40" />
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full opacity-8"
+    <div className="bg-[#0a0a0f] flex flex-col relative overflow-hidden" style={{ minHeight: '100dvh' }}>
+      <div className="absolute inset-0 bg-grid opacity-40 pointer-events-none" />
+      <div className="absolute top-0 right-0 w-72 sm:w-[600px] h-72 sm:h-[600px] rounded-full opacity-8 pointer-events-none"
         style={{ background: 'radial-gradient(ellipse, #9b5de5 0%, transparent 70%)' }} />
 
       {/* Header */}
-      <header className="relative z-10 flex items-center justify-between px-6 py-5 border-b border-white/5">
-        <button onClick={handleBack} className="flex items-center gap-2 text-white/50 hover:text-white transition-colors text-sm">
+      <header className="relative z-10 flex items-center justify-between px-4 sm:px-6 py-3.5 sm:py-5 border-b border-white/5 flex-shrink-0">
+        <button onClick={handleBack} className="flex items-center gap-1.5 text-white/50 hover:text-white transition-colors text-sm">
           ← Back
         </button>
         <div className="flex items-center gap-2">
@@ -232,36 +232,32 @@ export default function OnboardingScreen() {
             style={{ background: 'linear-gradient(135deg, #ff2d78, #9b5de5)' }}>
             ✦
           </div>
-          <span className="text-white font-bold">VibeMatch</span>
+          <span className="text-white font-bold text-sm">VibeMatch</span>
         </div>
-        <div className="text-white/30 text-sm font-medium">
+        <div className="text-white/30 text-xs sm:text-sm font-medium">
           {step + 1} / {STEPS.length}
         </div>
       </header>
 
       {/* Progress bar */}
-      <div className="relative z-10 h-1 bg-white/5">
-        <div
-          className="h-full transition-all duration-500 ease-out"
-          style={{
-            width: `${progress}%`,
-            background: 'linear-gradient(90deg, #ff2d78, #9b5de5)',
-          }}
-        />
+      <div className="relative z-10 h-1 bg-white/5 flex-shrink-0">
+        <div className="h-full transition-all duration-500 ease-out"
+          style={{ width: `${progress}%`, background: 'linear-gradient(90deg, #ff2d78, #9b5de5)' }} />
       </div>
 
-      {/* Content */}
-      <main className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 py-8 max-w-2xl mx-auto w-full">
+      {/* Content — scrollable so keyboard doesn't cut it off */}
+      <main className="relative z-10 flex-1 overflow-y-auto overscroll-contain">
+        <div className="flex flex-col items-center justify-start sm:justify-center min-h-full px-4 sm:px-6 py-6 sm:py-8 max-w-2xl mx-auto w-full">
         {stepKey !== 'done' ? (
           <div className="w-full animate-fade-in">
             {/* Step icon */}
-            <div className="flex items-center gap-4 mb-8">
-              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-3xl bg-gradient-to-br ${info.color}`}>
+            <div className="flex items-center gap-3 sm:gap-4 mb-5 sm:mb-8">
+              <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center text-2xl sm:text-3xl bg-gradient-to-br ${info.color} flex-shrink-0`}>
                 {info.icon}
               </div>
               <div>
-                <h2 className="text-2xl font-black text-white">{info.title}</h2>
-                <p className="text-white/50 text-sm mt-0.5">{info.subtitle}</p>
+                <h2 className="text-xl sm:text-2xl font-black text-white">{info.title}</h2>
+                <p className="text-white/50 text-xs sm:text-sm mt-0.5">{info.subtitle}</p>
               </div>
             </div>
 
@@ -384,9 +380,9 @@ export default function OnboardingScreen() {
         )}
 
         {/* Navigation */}
-        <div className="flex gap-3 mt-8 w-full">
+        <div className="flex gap-3 mt-6 sm:mt-8 w-full">
           {stepKey !== 'alias' && stepKey !== 'done' && (
-            <button onClick={() => setStep(s => s - 1)} className="btn-ghost flex-1 py-3">
+            <button onClick={() => setStep(s => s - 1)} className="btn-ghost flex-1 py-3 text-sm">
               ← Back
             </button>
           )}
@@ -406,11 +402,12 @@ export default function OnboardingScreen() {
         {(stepKey === 'dislikes' || stepKey === 'interests') && (
           <button
             onClick={() => setStep(s => s + 1)}
-            className="text-white/30 text-sm mt-3 hover:text-white/50 transition-colors"
+            className="text-white/30 text-sm mt-3 hover:text-white/50 transition-colors pb-safe"
           >
             Skip for now
           </button>
         )}
+        </div>{/* end inner container */}
       </main>
     </div>
   );

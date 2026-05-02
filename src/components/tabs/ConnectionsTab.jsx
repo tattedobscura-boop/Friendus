@@ -242,40 +242,40 @@ function ChatView({ user, onBack }) {
   };
 
   return (
-    <div className="flex flex-col h-full">
-      {/* Header */}
-      <div className="px-5 py-4 border-b border-white/5 flex items-center gap-3"
-        style={{ background: 'rgba(10,10,15,0.98)', backdropFilter: 'blur(20px)' }}>
-        <button onClick={onBack} className="text-white/50 hover:text-white transition-colors w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/5">
-          ←
-        </button>
-        <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-white text-sm bg-gradient-to-br ${user.avatarColor} flex-shrink-0`}>
+    /* h-full + flex-col fills the parent slot from AppShell; min-h-0 prevents flex overflow */
+    <div className="flex flex-col h-full min-h-0">
+
+      {/* ── Chat header ── */}
+      <div
+        className="flex-shrink-0 px-3 sm:px-4 py-3 border-b border-white/5 flex items-center gap-2 sm:gap-3"
+        style={{ background: 'rgba(10,10,15,0.98)', backdropFilter: 'blur(20px)' }}
+      >
+        <button
+          onClick={onBack}
+          className="w-8 h-8 flex items-center justify-center rounded-lg text-white/50 hover:text-white hover:bg-white/5 transition-colors flex-shrink-0"
+        >←</button>
+
+        <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center font-black text-white text-xs sm:text-sm bg-gradient-to-br ${user.avatarColor} flex-shrink-0`}>
           {user.avatar}
         </div>
+
         <div className="flex-1 min-w-0">
-          <p className="text-white font-bold text-sm">{user.alias}</p>
+          <p className="text-white font-bold text-sm truncate">{user.alias}</p>
           <p className="text-white/40 text-xs flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-green-400" />
-            {days} days connected
+            <span className="w-1.5 h-1.5 rounded-full bg-green-400 flex-shrink-0" />
+            {days}d connected
           </p>
         </div>
 
         {/* Call buttons */}
-        <div className="flex items-center gap-2">
-          {/* Voice call */}
+        <div className="flex items-center gap-1.5 flex-shrink-0">
           <button
             onClick={() => setActiveCall({ user, type: 'voice' })}
-            className="w-9 h-9 rounded-xl flex items-center justify-center text-base transition-all hover:scale-110 active:scale-95"
-            style={{
-              background: 'rgba(0, 245, 212, 0.12)',
-              border: '1px solid rgba(0, 245, 212, 0.25)',
-            }}
+            className="w-9 h-9 rounded-xl flex items-center justify-center text-base active:scale-95 transition-all"
+            style={{ background: 'rgba(0,245,212,0.12)', border: '1px solid rgba(0,245,212,0.25)' }}
             title="Voice Call"
-          >
-            📞
-          </button>
+          >📞</button>
 
-          {/* Video call — locked until 90 days */}
           <button
             onClick={() => videoUnlocked && setActiveCall({ user, type: 'video' })}
             className="relative w-9 h-9 rounded-xl flex items-center justify-center text-base transition-all"
@@ -288,93 +288,79 @@ function ChatView({ user, onBack }) {
             title={videoUnlocked ? 'Video Call' : `Unlocks in ${90 - days} more days`}
           >
             📹
-            {!videoUnlocked && (
-              <span className="absolute -top-1 -right-1 text-xs">🔒</span>
-            )}
+            {!videoUnlocked && <span className="absolute -top-1 -right-1 text-xs leading-none">🔒</span>}
           </button>
         </div>
       </div>
 
-      {/* 90-day progress bar */}
-      <DayCounterBar days={days} />
+      {/* ── 90-day bar ── */}
+      <div className="flex-shrink-0"><DayCounterBar days={days} /></div>
 
-      {/* Shared vibes */}
-      <div className="px-4 py-2 border-b border-white/5 flex items-center gap-2 overflow-x-auto"
-        style={{ background: 'rgba(255,255,255,0.02)' }}>
+      {/* ── Shared vibes ── */}
+      <div
+        className="flex-shrink-0 px-4 py-2 border-b border-white/5 flex items-center gap-2 overflow-x-auto"
+        style={{ background: 'rgba(255,255,255,0.02)' }}
+      >
         <span className="text-white/30 text-xs flex-shrink-0 font-semibold">Shared:</span>
         {user.likes.slice(0, 4).map((l, i) => (
-          <span key={i} className="flex-shrink-0 tag-like text-xs">{l}</span>
+          <span key={i} className="flex-shrink-0 tag-like" style={{ fontSize: '11px' }}>{l}</span>
         ))}
       </div>
 
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto py-4">
-        {localMessages.map((msg) => (
-          <MessageBubble key={msg.id} msg={msg} />
-        ))}
-
-        {/* Active prompt */}
-        {pendingPrompt && (
-          <PromptCard
-            prompt={pendingPrompt}
-            onSend={sendMessage}
-          />
+      {/* ── Messages scrollable area — flex-1 min-h-0 is key ── */}
+      <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain py-3">
+        {localMessages.length === 0 && (
+          <div className="text-center py-8 px-4">
+            <p className="text-4xl mb-2">👋</p>
+            <p className="text-white/40 text-sm">Start the convo! You both love <strong className="text-white/60">{user.likes[0]}</strong></p>
+          </div>
         )}
+        {localMessages.map((msg) => <MessageBubble key={msg.id} msg={msg} />)}
 
+        {pendingPrompt && <PromptCard prompt={pendingPrompt} onSend={sendMessage} />}
         <div ref={messagesEndRef} />
       </div>
 
       {/* Discovery toast */}
-      {discoveryToast && (
-        <DiscoveryToast items={discoveryToast} onDismiss={() => setDiscoveryToast(null)} />
-      )}
+      {discoveryToast && <DiscoveryToast items={discoveryToast} onDismiss={() => setDiscoveryToast(null)} />}
 
-      {/* Error banner */}
-      {error && (
-        <div className="mx-4 mb-2 px-3 py-2 rounded-xl text-xs text-red-400 flex items-center gap-1.5"
-          style={{ background: 'rgba(255,45,120,0.08)', border: '1px solid rgba(255,45,120,0.2)' }}>
-          <span>⚠️</span> {error}
+      {/* ── Input area — flex-shrink-0 keeps it pinned ── */}
+      <div className="flex-shrink-0 border-t border-white/5 pb-safe" style={{ background: 'rgba(10,10,15,0.98)' }}>
+        {error && (
+          <div className="mx-4 mt-2 px-3 py-2 rounded-xl text-xs text-red-400 flex items-center gap-1.5"
+            style={{ background: 'rgba(255,45,120,0.08)', border: '1px solid rgba(255,45,120,0.2)' }}>
+            <span>⚠️</span> {error}
+          </div>
+        )}
+        <div className="px-3 sm:px-4 pt-2 pb-2 flex items-center gap-2">
+          <button
+            onClick={handleSendPrompt}
+            title="Send a discovery prompt"
+            className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center flex-shrink-0 active:scale-95 transition-all"
+            style={{ background: 'rgba(155,93,229,0.15)', border: '1px solid rgba(155,93,229,0.3)', fontSize: '16px' }}
+          >❓</button>
+
+          <input
+            type="text"
+            value={input}
+            onChange={e => { setInput(e.target.value); setError(''); }}
+            placeholder="Message..."
+            className="input-field flex-1 text-sm"
+            style={{ padding: '10px 14px' }}
+            onKeyDown={e => e.key === 'Enter' && !e.shiftKey && sendMessage()}
+            maxLength={300}
+          />
+
+          <button
+            onClick={() => sendMessage()}
+            disabled={!input.trim()}
+            className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center flex-shrink-0 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+            style={{ background: 'linear-gradient(135deg, #ff2d78, #9b5de5)', fontSize: '16px' }}
+          >➤</button>
         </div>
-      )}
-
-      {/* Input row */}
-      <div className="px-4 pb-4 pt-2 border-t border-white/5 flex items-end gap-2"
-        style={{ background: 'rgba(10,10,15,0.98)' }}>
-        {/* Prompt button */}
-        <button
-          onClick={handleSendPrompt}
-          title="Send a discovery prompt"
-          className="w-10 h-10 rounded-xl flex items-center justify-center text-lg flex-shrink-0 transition-all hover:scale-110 active:scale-95"
-          style={{
-            background: 'rgba(155,93,229,0.15)',
-            border: '1px solid rgba(155,93,229,0.3)',
-          }}
-        >
-          ❓
-        </button>
-
-        <input
-          type="text"
-          value={input}
-          onChange={e => { setInput(e.target.value); setError(''); }}
-          placeholder="Message..."
-          className="input-field flex-1 text-sm py-2.5"
-          onKeyDown={e => e.key === 'Enter' && !e.shiftKey && sendMessage()}
-          maxLength={300}
-        />
-
-        <button
-          onClick={() => sendMessage()}
-          disabled={!input.trim()}
-          className="w-10 h-10 rounded-xl flex items-center justify-center text-base transition-all hover:scale-110 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0"
-          style={{ background: 'linear-gradient(135deg, #ff2d78, #9b5de5)' }}
-        >
-          ➤
-        </button>
-      </div>
-
-      <div className="text-center text-white/15 text-xs pb-2">
-        🔒 Messages are filtered · ❓ Send prompts to unlock discovery board items
+        <p className="text-center text-white/15 text-xs pb-1.5 px-4">
+          🔒 Filtered · ❓ Prompts → Discovery Board
+        </p>
       </div>
     </div>
   );
@@ -389,15 +375,15 @@ export default function ConnectionsTab() {
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full min-h-0">
       {/* Header */}
-      <div className="px-5 pt-5 pb-4 border-b border-white/5">
-        <h2 className="text-xl font-black text-white">Connections</h2>
-        <p className="text-white/40 text-sm">{connections.length} vibe matches · chat, call & video</p>
+      <div className="flex-shrink-0 px-4 sm:px-5 pt-4 sm:pt-5 pb-3 border-b border-white/5">
+        <h2 className="text-lg sm:text-xl font-black text-white">Connections</h2>
+        <p className="text-white/40 text-xs sm:text-sm">{connections.length} vibe matches · chat, call & video</p>
       </div>
 
       {/* Legend */}
-      <div className="px-5 py-3 border-b border-white/5 flex items-center gap-4">
+      <div className="flex-shrink-0 px-4 sm:px-5 py-2.5 border-b border-white/5 flex items-center gap-3 sm:gap-4 overflow-x-auto">
         {[
           { icon: '💬', label: 'Chat anytime', color: 'rgba(255,255,255,0.4)' },
           { icon: '📞', label: 'Voice call', color: '#00f5d4' },
@@ -411,7 +397,7 @@ export default function ConnectionsTab() {
       </div>
 
       {/* Connection list */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-3">
+      <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-3 sm:p-4 space-y-2.5 sm:space-y-3">
         {connections.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center py-12">
             <div className="text-6xl mb-4">🤝</div>

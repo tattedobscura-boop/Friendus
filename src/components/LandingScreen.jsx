@@ -61,8 +61,8 @@ export default function LandingScreen() {
       </header>
 
       {/* Hero */}
-      <main className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 py-12 text-center">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold mb-8"
+      <main className="relative z-10 flex-1 flex flex-col items-center justify-center px-5 sm:px-6 py-8 sm:py-12 text-center">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold mb-5 sm:mb-8"
           style={{
             background: 'rgba(155, 93, 229, 0.15)',
             border: '1px solid rgba(155, 93, 229, 0.4)',
@@ -72,32 +72,30 @@ export default function LandingScreen() {
           No face. No filter. Just vibes.
         </div>
 
-        <h1 className="text-5xl sm:text-7xl font-black tracking-tight mb-6 leading-none">
+        <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black tracking-tight mb-4 sm:mb-6 leading-none">
           <span className="text-white">Friends found</span>
           <br />
           <span className="gradient-text">by what you love.</span>
         </h1>
 
-        <p className="text-lg text-white/50 max-w-xl mb-10 leading-relaxed">
+        <p className="text-sm sm:text-base lg:text-lg text-white/50 max-w-xl mb-6 sm:mb-10 leading-relaxed">
           VibeMatch connects you with people who share your passions —
           zero photos, zero judgement. Build your vision board, share your interests,
           find your people.
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-4 mb-16">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-8 sm:mb-14 w-full max-w-xs sm:max-w-none sm:w-auto">
           <button
-            className="btn-primary text-base px-8 py-4"
+            className="btn-primary px-7 py-3.5 sm:py-4 text-sm sm:text-base font-bold"
             onClick={() => setCurrentScreen('onboarding')}
             onMouseEnter={() => setHoveredCta(true)}
             onMouseLeave={() => setHoveredCta(false)}
-            style={{ fontSize: '16px' }}
           >
             {hoveredCta ? '✦ Let\'s go →' : 'Start Matching — Free'}
           </button>
           <button
-            className="btn-ghost text-base px-8 py-4"
+            className="btn-ghost px-7 py-3.5 sm:py-4 text-sm sm:text-base"
             onClick={() => setCurrentScreen('onboarding')}
-            style={{ fontSize: '16px' }}
           >
             See How It Works
           </button>
@@ -126,26 +124,18 @@ export default function LandingScreen() {
         </div>
       </main>
 
-      {/* Bottom scroll hint */}
-      <div className="relative z-10 flex justify-center pb-8">
-        <div className="flex flex-col items-center gap-1 opacity-30">
-          <span className="text-xs text-white">scroll</span>
-          <div className="w-px h-8 bg-white/40" />
-        </div>
-      </div>
-
       {/* Stats bar */}
-      <div className="relative z-10 border-t border-white/5 py-6 px-8">
-        <div className="max-w-2xl mx-auto flex items-center justify-center gap-12 flex-wrap">
+      <div className="relative z-10 border-t border-white/5 py-4 sm:py-6 px-5 sm:px-8 pb-safe">
+        <div className="max-w-2xl mx-auto grid grid-cols-4 gap-2 sm:gap-6">
           {[
-            { n: '128K+', label: 'Active users' },
-            { n: '4.2M', label: 'Connections made' },
-            { n: '99%', label: 'Anonymous' },
-            { n: '0', label: 'Face photos' },
+            { n: '128K+', label: 'Users' },
+            { n: '4.2M',  label: 'Connections' },
+            { n: '99%',   label: 'Anonymous' },
+            { n: '0',     label: 'Face photos' },
           ].map((s, i) => (
             <div key={i} className="text-center">
-              <div className="text-2xl font-black gradient-text">{s.n}</div>
-              <div className="text-xs text-white/40 font-medium mt-0.5">{s.label}</div>
+              <div className="text-lg sm:text-2xl font-black gradient-text">{s.n}</div>
+              <div className="text-xs text-white/40 font-medium mt-0.5 leading-tight">{s.label}</div>
             </div>
           ))}
         </div>
