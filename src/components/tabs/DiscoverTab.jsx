@@ -54,7 +54,7 @@ function MiniVibeTile({ item }) {
   const [imgError, setImgError] = useState(false);
 
   return (
-    <div className="relative rounded-xl overflow-hidden aspect-square" style={{ background: 'transparent' }}>
+    <div className="relative rounded-xl overflow-hidden aspect-square" style={{ background: '#1a1a2e' }}>
       <div className={`absolute inset-0 bg-gradient-to-br ${item.color}`} />
       {item.img && !imgError && (
         <img
