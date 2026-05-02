@@ -50,6 +50,7 @@ export function AppProvider({ children }) {
     likes: [],
     dislikes: [],
     interests: [],
+    values: [],
     vibeBoard: [],
     discoveryBoard: [],
     redFlagBoard: [],

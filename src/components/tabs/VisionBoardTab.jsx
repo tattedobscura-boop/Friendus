@@ -51,7 +51,7 @@ const RED_FLAG_PRESETS = [
   { emoji: '🚩', label: 'Controlling', color: 'from-red-700 to-rose-800' },
 ];
 
-const CATEGORIES = ['All', 'Places', 'Food', 'Activities', 'Music', 'Tech', 'Animals', 'Vibes'];
+const CATEGORIES = ['All', 'Places', 'Food', 'Activities', 'Music', 'Tech', 'Animals', 'Ideas', 'Wellness', 'Film', 'Vibes'];
 
 // Board types config
 const BOARD_TABS = [
