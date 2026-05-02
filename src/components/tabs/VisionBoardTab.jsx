@@ -3,6 +3,30 @@ import { useApp } from '../../context/AppContext';
 import { VISION_SEARCH_ITEMS } from '../../utils/mockData';
 import { isContentSafe, getBlockedReason } from '../../utils/contentFilter';
 
+// Green flag presets
+const GREEN_FLAG_PRESETS = [
+  { emoji: '💚', label: 'Great listener', color: 'from-green-500 to-emerald-600' },
+  { emoji: '💚', label: 'Respects boundaries', color: 'from-emerald-500 to-green-600' },
+  { emoji: '💚', label: 'Shows up consistently', color: 'from-green-600 to-teal-600' },
+  { emoji: '💚', label: 'Honest & open', color: 'from-teal-500 to-green-600' },
+  { emoji: '💚', label: 'Emotionally available', color: 'from-green-500 to-emerald-700' },
+  { emoji: '💚', label: 'Checks in on you', color: 'from-emerald-600 to-green-700' },
+  { emoji: '💚', label: 'Non-judgmental', color: 'from-green-500 to-lime-600' },
+  { emoji: '💚', label: 'Keeps their word', color: 'from-lime-500 to-green-600' },
+  { emoji: '💚', label: 'Celebrates your wins', color: 'from-green-400 to-emerald-600' },
+  { emoji: '💚', label: 'Gives you space', color: 'from-teal-400 to-green-600' },
+  { emoji: '💚', label: 'Takes accountability', color: 'from-emerald-500 to-teal-600' },
+  { emoji: '💚', label: 'Makes you laugh', color: 'from-green-400 to-lime-500' },
+  { emoji: '💚', label: 'Genuinely curious', color: 'from-lime-400 to-green-500' },
+  { emoji: '💚', label: 'Supportive', color: 'from-green-500 to-emerald-600' },
+  { emoji: '💚', label: 'Reciprocates effort', color: 'from-emerald-400 to-green-600' },
+  { emoji: '💚', label: 'Calm communicator', color: 'from-teal-500 to-emerald-600' },
+  { emoji: '💚', label: 'Remembers details', color: 'from-green-600 to-teal-700' },
+  { emoji: '💚', label: 'Growth mindset', color: 'from-lime-500 to-green-700' },
+  { emoji: '💚', label: 'Comfortable silence', color: 'from-green-500 to-teal-600' },
+  { emoji: '💚', label: 'Uplifts others', color: 'from-emerald-500 to-lime-600' },
+];
+
 // Red flag presets
 const RED_FLAG_PRESETS = [
   { emoji: '🚩', label: 'Cancels plans', color: 'from-red-600 to-rose-700' },
@@ -49,6 +73,15 @@ const BOARD_TABS = [
     emptyIcon: '✨',
     emptyText: 'Answer chat prompts and your discoveries auto-populate here.',
     readonly: true,
+  },
+  {
+    id: 'greenflag',
+    label: 'Green Flags',
+    icon: '💚',
+    desc: 'Your must-haves',
+    color: 'from-green-500 to-emerald-600',
+    emptyIcon: '💚',
+    emptyText: 'Log the qualities that matter most to you in a friendship. Your green lights.',
   },
   {
     id: 'redflag',
@@ -118,16 +151,17 @@ const TILE_SIZES = [
   'col-span-2 row-span-1',  // 7 – wide
 ];
 
-function VisionTile({ item, onRemove, index, isReadonly, isRedFlag }) {
+function VisionTile({ item, onRemove, index, isReadonly, isRedFlag, isGreenFlag }) {
   const [hovered, setHovered] = useState(false);
   const [imgLoaded, setImgLoaded] = useState(false);
   const [imgError, setImgError] = useState(false);
 
-  const sizeClass = isRedFlag
+  const isFlagTile = isRedFlag || isGreenFlag;
+  const sizeClass = isFlagTile
     ? 'col-span-1 row-span-1'
     : TILE_SIZES[index % TILE_SIZES.length];
 
-  const minH = isRedFlag ? '80px' : '110px';
+  const minH = isFlagTile ? '80px' : '110px';
 
   return (
     <div
@@ -140,7 +174,7 @@ function VisionTile({ item, onRemove, index, isReadonly, isRedFlag }) {
       <div className={`absolute inset-0 bg-gradient-to-br ${item.color}`} />
 
       {/* ── Real photo ── */}
-      {item.img && !isRedFlag && !imgError && (
+      {item.img && !isFlagTile && !imgError && (
         <img
           src={item.img}
           alt={item.label}
@@ -155,6 +189,12 @@ function VisionTile({ item, onRemove, index, isReadonly, isRedFlag }) {
       {isRedFlag && (
         <div className="absolute inset-0 opacity-25"
           style={{ backgroundImage: 'repeating-linear-gradient(45deg,rgba(0,0,0,0.15) 0,rgba(0,0,0,0.15) 4px,transparent 4px,transparent 10px)' }} />
+      )}
+
+      {/* ── Green flag shimmer overlay ── */}
+      {isGreenFlag && (
+        <div className="absolute inset-0 opacity-20"
+          style={{ backgroundImage: 'repeating-linear-gradient(135deg,rgba(255,255,255,0.12) 0,rgba(255,255,255,0.12) 3px,transparent 3px,transparent 12px)' }} />
       )}
 
       {/* ── Dark gradient scrim so label is always readable ── */}
@@ -224,6 +264,71 @@ function RedFlagPresetPicker({ onAdd, added }) {
           );
         })}
       </div>
+    </div>
+  );
+}
+
+function GreenFlagPresetPicker({ onAdd, added }) {
+  return (
+    <div>
+      <p className="text-xs font-bold text-white/40 uppercase tracking-wider mb-2">Common Green Flags</p>
+      <div className="grid grid-cols-2 gap-1.5 max-h-48 overflow-y-auto">
+        {GREEN_FLAG_PRESETS.map((gf, i) => {
+          const isAdded = added.find(a => a.label === gf.label);
+          return (
+            <button
+              key={i}
+              onClick={() => !isAdded && onAdd(gf)}
+              className="flex items-center gap-2 px-3 py-2 rounded-xl text-left transition-all"
+              style={{
+                background: isAdded ? 'rgba(34,197,94,0.12)' : 'rgba(255,255,255,0.05)',
+                border: `1px solid ${isAdded ? 'rgba(34,197,94,0.3)' : 'rgba(255,255,255,0.08)'}`,
+                opacity: isAdded ? 0.5 : 1,
+                cursor: isAdded ? 'default' : 'pointer',
+              }}
+            >
+              <span className="text-sm flex-shrink-0">💚</span>
+              <span className="text-xs text-white/80 font-medium leading-tight">{gf.label}</span>
+              {isAdded && <span className="ml-auto text-xs text-green-400 flex-shrink-0">✓</span>}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function GreenFlagPanel({ items, onAdd, onRemove }) {
+  const [customInput, setCustomInput] = useState('');
+  const [customError, setCustomError] = useState('');
+
+  const handleCustom = () => {
+    const clean = customInput.trim();
+    if (!clean) return;
+    const reason = getBlockedReason(clean);
+    if (reason) { setCustomError(reason); setTimeout(() => setCustomError(''), 3000); return; }
+    onAdd({ emoji: '💚', label: clean, color: 'from-green-500 to-emerald-600', category: 'Custom' });
+    setCustomInput('');
+  };
+
+  return (
+    <div className="p-4 space-y-4 border-b border-white/5 animate-slide-up"
+      style={{ background: 'rgba(34,197,94,0.03)' }}>
+      <div>
+        <p className="text-xs font-bold text-white/40 uppercase tracking-wider mb-2">Add your own</p>
+        <div className="flex gap-2">
+          <input type="text" value={customInput} onChange={e => { setCustomInput(e.target.value); setCustomError(''); }}
+            placeholder="e.g. Remembers what matters to you..."
+            className="input-field flex-1 text-sm py-2" maxLength={40}
+            onKeyDown={e => e.key === 'Enter' && handleCustom()} />
+          <button onClick={handleCustom} disabled={!customInput.trim()} className="btn-primary px-4 text-sm disabled:opacity-40"
+            style={{ background: 'linear-gradient(135deg, #22c55e, #10b981)' }}>
+            💚
+          </button>
+        </div>
+        {customError && <p className="text-red-400 text-xs mt-1 flex items-center gap-1"><span>⚠️</span>{customError}</p>}
+      </div>
+      <GreenFlagPresetPicker onAdd={onAdd} added={items} />
     </div>
   );
 }
@@ -336,6 +441,7 @@ export default function VisionBoardTab() {
     profile,
     addToVibeBoard, removeFromVibeBoard,
     addToDiscoveryBoard, removeFromDiscoveryBoard,
+    addToGreenFlagBoard, removeFromGreenFlagBoard,
     addToRedFlagBoard, removeFromRedFlagBoard,
   } = useApp();
 
@@ -345,6 +451,7 @@ export default function VisionBoardTab() {
   const boardConfig = {
     vibe: { items: profile.vibeBoard, add: addToVibeBoard, remove: removeFromVibeBoard },
     discovery: { items: profile.discoveryBoard, add: addToDiscoveryBoard, remove: removeFromDiscoveryBoard },
+    greenflag: { items: profile.greenFlagBoard, add: addToGreenFlagBoard, remove: removeFromGreenFlagBoard },
     redflag: { items: profile.redFlagBoard, add: addToRedFlagBoard, remove: removeFromRedFlagBoard },
   };
 
@@ -364,7 +471,9 @@ export default function VisionBoardTab() {
               style={{
                 background: activeBoard === 'redflag'
                   ? 'linear-gradient(135deg, #ff2d78, #c026d3)'
-                  : 'linear-gradient(135deg, #ff2d78, #9b5de5)',
+                  : activeBoard === 'greenflag'
+                    ? 'linear-gradient(135deg, #22c55e, #10b981)'
+                    : 'linear-gradient(135deg, #ff2d78, #9b5de5)',
               }}
             >
               {showPanel ? '× Close' : `+ Add to ${currentTab.label}`}
@@ -388,12 +497,15 @@ export default function VisionBoardTab() {
                       ? 'rgba(255,45,120,0.15)'
                       : tab.id === 'discovery'
                         ? 'rgba(0,245,212,0.1)'
-                        : 'rgba(155,93,229,0.15)'
+                        : tab.id === 'greenflag'
+                          ? 'rgba(34,197,94,0.12)'
+                          : 'rgba(155,93,229,0.15)'
                     : 'rgba(255,255,255,0.04)',
                   border: `1px solid ${isActive
                     ? tab.id === 'redflag' ? 'rgba(255,45,120,0.35)'
                       : tab.id === 'discovery' ? 'rgba(0,245,212,0.25)'
-                        : 'rgba(155,93,229,0.35)'
+                        : tab.id === 'greenflag' ? 'rgba(34,197,94,0.35)'
+                          : 'rgba(155,93,229,0.35)'
                     : 'rgba(255,255,255,0.07)'}`,
                 }}
               >
@@ -408,7 +520,9 @@ export default function VisionBoardTab() {
                   <span className="text-xs font-bold rounded-full px-1.5 py-0.5"
                     style={{
                       background: isActive
-                        ? tab.id === 'redflag' ? 'rgba(255,45,120,0.3)' : 'rgba(255,255,255,0.15)'
+                        ? tab.id === 'redflag' ? 'rgba(255,45,120,0.3)'
+                          : tab.id === 'greenflag' ? 'rgba(34,197,94,0.3)'
+                            : 'rgba(255,255,255,0.15)'
                         : 'rgba(255,255,255,0.07)',
                       color: isActive ? 'white' : 'rgba(255,255,255,0.3)',
                       fontSize: '9px',
@@ -428,6 +542,7 @@ export default function VisionBoardTab() {
           <span>{currentTab.icon}</span>
           {activeBoard === 'vibe' && 'Your visual identity. No faces — just vibes.'}
           {activeBoard === 'discovery' && '✨ Auto-populated from your chat prompt answers.'}
+          {activeBoard === 'greenflag' && '💚 The qualities that make someone a real one. Private to you.'}
           {activeBoard === 'redflag' && '🚩 Your personal dealbreaker tracker. Private to you.'}
         </p>
       </div>
@@ -436,7 +551,9 @@ export default function VisionBoardTab() {
       {showPanel && !currentTab.readonly && (
         activeBoard === 'redflag'
           ? <RedFlagPanel items={items} onAdd={add} onRemove={remove} />
-          : <VibeSearchPanel items={items} onAdd={add} onRemove={remove} onAddCustom={add} />
+          : activeBoard === 'greenflag'
+            ? <GreenFlagPanel items={items} onAdd={add} onRemove={remove} />
+            : <VibeSearchPanel items={items} onAdd={add} onRemove={remove} onAddCustom={add} />
       )}
 
       {/* Board grid */}
@@ -454,7 +571,9 @@ export default function VisionBoardTab() {
                 style={{
                   background: activeBoard === 'redflag'
                     ? 'linear-gradient(135deg, #ff2d78, #c026d3)'
-                    : 'linear-gradient(135deg, #ff2d78, #9b5de5)',
+                    : activeBoard === 'greenflag'
+                      ? 'linear-gradient(135deg, #22c55e, #10b981)'
+                      : 'linear-gradient(135deg, #ff2d78, #9b5de5)',
                 }}>
                 + Start Adding
               </button>
@@ -463,8 +582,8 @@ export default function VisionBoardTab() {
         ) : (
           <>
             <div
-              className={`grid gap-2 ${activeBoard === 'redflag' ? 'grid-cols-2' : 'grid-cols-3'}`}
-              style={{ gridAutoRows: activeBoard === 'redflag' ? '80px' : '100px' }}
+              className={`grid gap-2 ${(activeBoard === 'redflag' || activeBoard === 'greenflag') ? 'grid-cols-2' : 'grid-cols-3'}`}
+              style={{ gridAutoRows: (activeBoard === 'redflag' || activeBoard === 'greenflag') ? '80px' : '100px' }}
             >
               {items.map((item, i) => (
                 <VisionTile
@@ -474,6 +593,7 @@ export default function VisionBoardTab() {
                   onRemove={remove}
                   isReadonly={currentTab.readonly}
                   isRedFlag={activeBoard === 'redflag'}
+                  isGreenFlag={activeBoard === 'greenflag'}
                 />
               ))}
 
@@ -483,12 +603,16 @@ export default function VisionBoardTab() {
                   onClick={() => setShowPanel(true)}
                   className="rounded-xl border-2 border-dashed flex flex-col items-center justify-center gap-1 transition-all"
                   style={{
-                    minHeight: activeBoard === 'redflag' ? '80px' : '100px',
-                    borderColor: activeBoard === 'redflag' ? 'rgba(255,45,120,0.2)' : 'rgba(255,255,255,0.08)',
-                    color: activeBoard === 'redflag' ? 'rgba(255,45,120,0.4)' : 'rgba(255,255,255,0.25)',
+                    minHeight: (activeBoard === 'redflag' || activeBoard === 'greenflag') ? '80px' : '100px',
+                    borderColor: activeBoard === 'redflag' ? 'rgba(255,45,120,0.2)'
+                      : activeBoard === 'greenflag' ? 'rgba(34,197,94,0.25)'
+                        : 'rgba(255,255,255,0.08)',
+                    color: activeBoard === 'redflag' ? 'rgba(255,45,120,0.4)'
+                      : activeBoard === 'greenflag' ? 'rgba(34,197,94,0.5)'
+                        : 'rgba(255,255,255,0.25)',
                   }}
                 >
-                  <span className="text-xl">{activeBoard === 'redflag' ? '🚩' : '+'}</span>
+                  <span className="text-xl">{activeBoard === 'redflag' ? '🚩' : activeBoard === 'greenflag' ? '💚' : '+'}</span>
                   <span className="text-xs font-semibold">Add</span>
                 </button>
               )}
@@ -500,6 +624,15 @@ export default function VisionBoardTab() {
                 style={{ background: 'rgba(0,245,212,0.05)', border: '1px solid rgba(0,245,212,0.15)', color: 'rgba(0,245,212,0.7)' }}>
                 <span>✨</span>
                 <span>These are auto-discovered from answering chat prompts — a window into who you are through conversations.</span>
+              </div>
+            )}
+
+            {/* Green flag board note */}
+            {activeBoard === 'greenflag' && (
+              <div className="mt-4 p-3 rounded-xl flex items-center gap-2 text-xs"
+                style={{ background: 'rgba(34,197,94,0.05)', border: '1px solid rgba(34,197,94,0.2)', color: 'rgba(74,222,128,0.8)' }}>
+                <span>🔒</span>
+                <span>This board is private. Know your worth — log what a real connection looks like to you.</span>
               </div>
             )}
 

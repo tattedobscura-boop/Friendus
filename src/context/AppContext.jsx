@@ -53,6 +53,7 @@ export function AppProvider({ children }) {
     vibeBoard: [],
     discoveryBoard: [],
     redFlagBoard: [],
+    greenFlagBoard: [],
   });
 
   const [connections, setConnections] = useState(DEMO_CONNECTIONS);
@@ -101,6 +102,17 @@ export function AppProvider({ children }) {
     setProfile(prev => ({ ...prev, redFlagBoard: prev.redFlagBoard.filter(v => v.label !== label) }));
   }, []);
 
+  // --- Green Flag Board ---
+  const addToGreenFlagBoard = useCallback((item) => {
+    setProfile(prev => {
+      if (prev.greenFlagBoard.find(v => v.label === item.label)) return prev;
+      return { ...prev, greenFlagBoard: [...prev.greenFlagBoard, item] };
+    });
+  }, []);
+  const removeFromGreenFlagBoard = useCallback((label) => {
+    setProfile(prev => ({ ...prev, greenFlagBoard: prev.greenFlagBoard.filter(v => v.label !== label) }));
+  }, []);
+
   // --- Connections ---
   const addConnection = useCallback((user) => {
     setConnections(prev => {
@@ -135,6 +147,7 @@ export function AppProvider({ children }) {
       addToVibeBoard, removeFromVibeBoard,
       addToDiscoveryBoard, removeFromDiscoveryBoard,
       addToRedFlagBoard, removeFromRedFlagBoard,
+      addToGreenFlagBoard, removeFromGreenFlagBoard,
       connections, addConnection,
       notifications, setNotifications,
       messageStore, getMessages, addMessage,
