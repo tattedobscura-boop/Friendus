@@ -207,7 +207,7 @@ function ChatView({ user, onBack }) {
         'Omg same! We should plan something 🌟',
         'You have such great taste honestly',
         'Never thought about it that way, but YES',
-        'This is why we matched 😄',
+        'This is why we connected 😄',
         'I could talk about this forever lol',
       ];
       const reply = replies[Math.floor(Math.random() * replies.length)];
@@ -379,7 +379,7 @@ export default function ConnectionsTab() {
       {/* Header */}
       <div className="flex-shrink-0 px-4 sm:px-5 pt-4 sm:pt-5 pb-3 border-b border-white/5">
         <h2 className="text-lg sm:text-xl font-black text-white">Connections</h2>
-        <p className="text-white/40 text-xs sm:text-sm">{connections.length} vibe matches · chat, call & video</p>
+        <p className="text-white/40 text-xs sm:text-sm">{connections.length} friends · chat, call & video</p>
       </div>
 
       {/* Legend */}
@@ -446,7 +446,7 @@ export default function ConnectionsTab() {
                   </div>
                   <p className="text-white/30 text-xs flex items-center gap-1.5 mb-2">
                     <span className="font-semibold" style={{ color: user.matchScore >= 90 ? '#00f5d4' : user.matchScore >= 75 ? '#9b5de5' : '#ff2d78' }}>
-                      {user.matchScore}% match
+                      {user.matchScore}% vibe
                     </span>
                     <span>·</span>
                     <span>{days}d connected</span>

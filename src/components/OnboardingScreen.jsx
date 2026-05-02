@@ -20,7 +20,7 @@ const STEP_INFO = {
   },
   dislikes: {
     title: 'What\'s not your vibe?',
-    subtitle: 'Be honest. Knowing what you dislike helps find better matches.',
+    subtitle: 'Be honest. Knowing what you dislike helps find better friends.',
     icon: '🚫',
     color: 'from-pink-500 to-rose-500',
   },
@@ -313,7 +313,7 @@ export default function OnboardingScreen() {
                   placeholder="Type something that's not your vibe..."
                   type="dislikes"
                 />
-                <p className="text-white/30 text-xs mt-2">Optional — but helps find better matches!</p>
+                <p className="text-white/30 text-xs mt-2">Optional — but helps find better friends!</p>
               </div>
             )}
 

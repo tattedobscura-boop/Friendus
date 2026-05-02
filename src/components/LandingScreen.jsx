@@ -79,7 +79,7 @@ export default function LandingScreen() {
         </h1>
 
         <p className="text-sm sm:text-base lg:text-lg text-white/50 max-w-xl mb-6 sm:mb-10 leading-relaxed">
-          VibeMatch connects you with people who share your passions —
+          VibeMatch connects you with friends who share your passions —
           zero photos, zero judgement. Build your vision board, share your interests,
           find your people.
         </p>
@@ -91,7 +91,7 @@ export default function LandingScreen() {
             onMouseEnter={() => setHoveredCta(true)}
             onMouseLeave={() => setHoveredCta(false)}
           >
-            {hoveredCta ? '✦ Let\'s go →' : 'Start Matching — Free'}
+            {hoveredCta ? '✦ Let\'s go →' : 'Find Your People — Free'}
           </button>
           <button
             className="btn-ghost px-7 py-3.5 sm:py-4 text-sm sm:text-base"
@@ -129,7 +129,7 @@ export default function LandingScreen() {
         <div className="max-w-2xl mx-auto grid grid-cols-4 gap-2 sm:gap-6">
           {[
             { n: '128K+', label: 'Users' },
-            { n: '4.2M',  label: 'Connections' },
+            { n: '4.2M',  label: 'Friendships' },
             { n: '99%',   label: 'Anonymous' },
             { n: '0',     label: 'Face photos' },
           ].map((s, i) => (

@@ -4,7 +4,7 @@ import { MOCK_USERS } from '../../utils/mockData';
 
 function MatchBadge({ score }) {
   const color = score >= 90 ? '#00f5d4' : score >= 75 ? '#9b5de5' : '#ff2d78';
-  const label = score >= 90 ? 'Perfect Vibe' : score >= 75 ? 'Great Match' : 'New Vibe';
+  const label = score >= 90 ? 'Perfect Vibe' : score >= 75 ? 'Great Fit' : 'New Vibe';
   return (
     <div
       className="flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold flex-shrink-0"
@@ -299,7 +299,7 @@ export default function DiscoverTab() {
         >
           <div className="text-center">
             <div className="text-6xl mb-3">✨</div>
-            <div className="text-3xl font-black text-white mb-1">Vibe Match!</div>
+            <div className="text-3xl font-black text-white mb-1">New Friend! 🤝</div>
             <div className="gradient-text font-bold text-lg">{matchAnimation} connected</div>
             <p className="text-white/50 text-sm mt-2">Say hi in Friends!</p>
           </div>
