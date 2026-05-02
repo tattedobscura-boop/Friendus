@@ -8,37 +8,37 @@ const STEPS = ['alias', 'likes', 'dislikes', 'interests', 'values', 'done'];
 const STEP_INFO = {
   alias: {
     title: 'Choose your alias',
-    subtitle: 'This is how people will know you — keep it anonymous!',
+    subtitle: 'Your face is never shown here — just a name that feels like you.',
     icon: '🎭',
     color: 'from-purple-500 to-pink-500',
   },
   likes: {
     title: 'What do you love?',
-    subtitle: 'Activities, foods, places, music — anything that sparks real joy.',
+    subtitle: 'This is how your best friend will find you — be specific and real.',
     icon: '💚',
     color: 'from-cyan-400 to-teal-500',
   },
   dislikes: {
     title: "What's not your vibe?",
-    subtitle: 'Being honest here helps connect you with people who actually get it.',
+    subtitle: "Honesty here filters out the wrong people so the right ones can reach you.",
     icon: '🚫',
     color: 'from-pink-500 to-rose-500',
   },
   interests: {
     title: 'Your deep interests',
-    subtitle: 'What could you talk about for hours? Passions, obsessions, rabbit holes.',
+    subtitle: 'What could you talk about for hours? The deeper the better — this is how best friends find each other.',
     icon: '🔮',
     color: 'from-violet-500 to-indigo-500',
   },
   values: {
     title: 'What do you stand for?',
-    subtitle: 'The beliefs and qualities that define who you are at your core.',
+    subtitle: 'The beliefs that define you. The best friendships are built on this.',
     icon: '🌱',
     color: 'from-green-500 to-teal-500',
   },
   done: {
     title: "You're all set!",
-    subtitle: 'Your vibe profile is ready. Time to find your people.',
+    subtitle: 'Your profile is ready. Your best friend is out there — go find them.',
     icon: '✨',
     color: 'from-yellow-400 to-orange-500',
   },
@@ -288,7 +288,7 @@ export default function OnboardingScreen() {
                     placeholder="e.g. NeonDreamer, WildMosaic..." className="input-field text-lg py-4"
                     maxLength={30} onKeyDown={e => e.key === 'Enter' && handleNext()} />
                   {aliasError && <p className="text-red-400 text-sm mt-2 flex items-center gap-1"><span>⚠️</span> {aliasError}</p>}
-                  <p className="text-white/30 text-xs mt-3">🔒 Your real name is never required. Stay anonymous.</p>
+                  <p className="text-white/30 text-xs mt-3">🙈 Your face is never shown. Your real name is never required. Only your vibe matters.</p>
                 </div>
               )}
 
@@ -337,8 +337,9 @@ export default function OnboardingScreen() {
             <div className="text-center animate-bounce-in">
               <div className="w-24 h-24 rounded-full mx-auto mb-6 flex items-center justify-center text-5xl"
                 style={{ background: 'linear-gradient(135deg, #ff2d78, #9b5de5)' }}>✨</div>
-              <h2 className="text-3xl font-black text-white mb-3">You're all set, <span className="gradient-text">{alias || 'Vibe'}</span>!</h2>
-              <p className="text-white/50 mb-8">Your vibe profile is ready. Go discover your people.</p>
+              <h2 className="text-3xl font-black text-white mb-3">Welcome, <span className="gradient-text">{alias || 'friend'}</span>.</h2>
+              <p className="text-white/70 text-base mb-1 font-semibold">Your best friend is looking for you too.</p>
+              <p className="text-white/40 text-sm mb-8">No face required. Just who you really are.</p>
 
               <div className="glass rounded-2xl p-5 text-left mb-8 space-y-3">
                 <p className="text-xs font-bold text-white/40 uppercase tracking-wider mb-1">Your Profile Preview</p>
@@ -392,7 +393,7 @@ export default function OnboardingScreen() {
             <button onClick={handleNext} disabled={!canNext()}
               className="btn-primary py-3 text-sm font-bold disabled:opacity-40 disabled:cursor-not-allowed disabled:transform-none"
               style={{ flex: 2 }}>
-              {stepKey === 'done' ? '🚀 Enter VibeMatch' : stepKey === 'dislikes' || stepKey === 'interests' || stepKey === 'values' ? 'Continue →' : 'Next →'}
+              {stepKey === 'done' ? '🤝 Find My Best Friend' : stepKey === 'dislikes' || stepKey === 'interests' || stepKey === 'values' ? 'Continue →' : 'Next →'}
             </button>
           </div>
 

@@ -74,7 +74,7 @@ function AgeGate({ onConfirm, onDecline }) {
             style={{ background: 'rgba(0,245,212,0.05)', border: '1px solid rgba(0,245,212,0.15)' }}>
             <span className="text-base flex-shrink-0 mt-0.5">🛡️</span>
             <p className="text-xs leading-relaxed" style={{ color: 'rgba(0,245,212,0.8)' }}>
-              VibeMatch is a <strong>friendship-only platform</strong>. No face photos. Content is filtered and monitored. We are committed to keeping this space safe and respectful for everyone.
+              VibeMatch is a <strong>best-friends platform</strong>. Your face is never shown — only your interests and vibe matter. Content is filtered and monitored to keep this space safe and genuine.
             </p>
           </div>
 
@@ -184,19 +184,21 @@ export default function LandingScreen() {
             color: '#c77dff',
           }}>
           <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-          No face. No filter. Just vibes.
+          Your face is never important here.
         </div>
 
         <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black tracking-tight mb-4 sm:mb-6 leading-none">
-          <span className="text-white">Friends found</span>
+          <span className="text-white">Find your</span>
           <br />
-          <span className="gradient-text">by what you love.</span>
+          <span className="gradient-text">best friend.</span>
         </h1>
 
-        <p className="text-sm sm:text-base lg:text-lg text-white/50 max-w-xl mb-6 sm:mb-10 leading-relaxed">
-          VibeMatch connects you with friends who share your passions —
-          zero photos, zero judgement. Build your vision board, share your interests,
-          find your people.
+        <p className="text-sm sm:text-base lg:text-lg text-white/50 max-w-xl mb-3 sm:mb-5 leading-relaxed">
+          VibeMatch is built for people looking for a <strong className="text-white/80">real, deep friendship</strong> —
+          not a photo, not a look. Just shared passions, honest interests, and genuine connection.
+        </p>
+        <p className="text-xs sm:text-sm text-white/35 max-w-md mb-6 sm:mb-10 leading-relaxed">
+          No selfies. No appearance ratings. Your face never enters the picture — only your vibe does.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-8 sm:mb-14 w-full max-w-xs sm:max-w-none sm:w-auto">
@@ -206,7 +208,7 @@ export default function LandingScreen() {
             onMouseEnter={() => setHoveredCta(true)}
             onMouseLeave={() => setHoveredCta(false)}
           >
-            {hoveredCta ? '✦ Let\'s go →' : 'Find Your People — Free'}
+            {hoveredCta ? '✦ Let\'s go →' : 'Find My Best Friend — Free'}
           </button>
           <button
             className="btn-ghost px-7 py-3.5 sm:py-4 text-sm sm:text-base"
@@ -219,10 +221,10 @@ export default function LandingScreen() {
         {/* Feature pills */}
         <div className="flex flex-wrap gap-3 justify-center max-w-lg">
           {[
-            { icon: '🎭', text: 'Anonymous profiles' },
-            { icon: '🚫', text: 'No face photos' },
-            { icon: '✨', text: 'Vision boards' },
-            { icon: '🤝', text: 'Friendship focused' },
+            { icon: '🙈', text: 'Face-free always' },
+            { icon: '🎭', text: 'Stay anonymous' },
+            { icon: '✨', text: 'Interest vision boards' },
+            { icon: '💚', text: 'Best friends only' },
             { icon: '🔒', text: 'Safe & filtered' },
           ].map((f, i) => (
             <div key={i}
@@ -243,10 +245,10 @@ export default function LandingScreen() {
       <div className="relative z-10 border-t border-white/5 py-4 sm:py-6 px-5 sm:px-8 pb-safe">
         <div className="max-w-2xl mx-auto grid grid-cols-4 gap-2 sm:gap-6">
           {[
-            { n: '128K+', label: 'Users' },
-            { n: '4.2M',  label: 'Friendships' },
-            { n: '99%',   label: 'Anonymous' },
-            { n: '0',     label: 'Face photos' },
+            { n: '128K+', label: 'People' },
+            { n: '4.2M',  label: 'Best friends made' },
+            { n: '100%',  label: 'Face-free' },
+            { n: '0',     label: 'Selfies allowed' },
           ].map((s, i) => (
             <div key={i} className="text-center">
               <div className="text-lg sm:text-2xl font-black gradient-text">{s.n}</div>

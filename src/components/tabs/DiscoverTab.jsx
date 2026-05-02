@@ -246,7 +246,7 @@ function UserCard({ user, onConnect, onPass, isTop, sharedLikes, sharedInterests
                 Vibe ✓
               </button>
             </div>
-            <p className="text-center text-white/20 text-xs mt-2">Swipe or tap to connect / pass</p>
+            <p className="text-center text-white/20 text-xs mt-2">No face needed — just vibes</p>
           </div>
         )}
       </div>
@@ -295,8 +295,8 @@ export default function DiscoverTab() {
       <div className="flex-shrink-0 px-4 sm:px-5 pt-4 pb-3">
         <div className="flex items-center justify-between mb-2">
           <div>
-            <h2 className="text-lg sm:text-xl font-black text-white leading-tight">Discover</h2>
-            <p className="text-white/40 text-xs sm:text-sm">Find friends by vibe, not by face</p>
+            <h2 className="text-lg sm:text-xl font-black text-white leading-tight">Find a Best Friend</h2>
+            <p className="text-white/40 text-xs sm:text-sm">By interest only — faces never shown</p>
           </div>
           <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-semibold flex-shrink-0"
             style={{ background: 'rgba(0,245,212,0.1)', border: '1px solid rgba(0,245,212,0.2)', color: '#00f5d4' }}>
@@ -382,9 +382,9 @@ export default function DiscoverTab() {
           style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(12px)' }}>
           <div className="text-center">
             <div className="text-6xl mb-3">🤝</div>
-            <div className="text-3xl font-black text-white mb-1">New Friend!</div>
+            <div className="text-3xl font-black text-white mb-1">Best friend found!</div>
             <div className="gradient-text font-bold text-lg">{matchAnimation} connected</div>
-            <p className="text-white/50 text-sm mt-2">Say hi in Friends!</p>
+            <p className="text-white/50 text-sm mt-2">Say hi — no face needed, just real talk.</p>
           </div>
         </div>
       )}

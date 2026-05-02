@@ -378,8 +378,8 @@ export default function ConnectionsTab() {
     <div className="flex flex-col h-full min-h-0">
       {/* Header */}
       <div className="flex-shrink-0 px-4 sm:px-5 pt-4 sm:pt-5 pb-3 border-b border-white/5">
-        <h2 className="text-lg sm:text-xl font-black text-white">Connections</h2>
-        <p className="text-white/40 text-xs sm:text-sm">{connections.length} friends · chat, call & video</p>
+        <h2 className="text-lg sm:text-xl font-black text-white">Best Friends</h2>
+        <p className="text-white/40 text-xs sm:text-sm">{connections.length} {connections.length === 1 ? 'friend' : 'friends'} · no faces, real bonds</p>
       </div>
 
       {/* Legend */}
@@ -401,8 +401,8 @@ export default function ConnectionsTab() {
         {connections.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center py-12">
             <div className="text-6xl mb-4">🤝</div>
-            <h3 className="text-white font-black text-lg mb-2">No connections yet</h3>
-            <p className="text-white/40 text-sm">Go to Discover and start connecting to find your people!</p>
+            <h3 className="text-white font-black text-lg mb-2">No best friends yet</h3>
+            <p className="text-white/40 text-sm">Head to Discover — your best friend is out there, face-free and waiting.</p>
           </div>
         ) : (
           connections.map((user) => {
@@ -482,7 +482,7 @@ export default function ConnectionsTab() {
         <div className="p-3 rounded-xl flex items-center gap-2 text-xs text-white/30"
           style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
           <span>🔒</span>
-          <span>Real identity never shared · Video unlocks after 90 days of connection</span>
+          <span>🙈 Faces never shown · Identity always protected · Video unlocks at 90 days of friendship</span>
         </div>
       </div>
     </div>

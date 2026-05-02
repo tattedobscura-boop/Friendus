@@ -127,9 +127,9 @@ export default function ProfileTab() {
             <h2 className="text-2xl font-black text-white">{profile.alias || 'Your Alias'}</h2>
             <div className="flex items-center gap-1.5 mt-1">
               <span className="w-1.5 h-1.5 rounded-full bg-green-400" />
-              <span className="text-green-400 text-xs font-semibold">Anonymous</span>
+              <span className="text-green-400 text-xs font-semibold">Face-free · Anonymous</span>
               <span className="text-white/20 mx-1">•</span>
-              <span className="text-white/40 text-xs">{totalTags} vibe tags</span>
+              <span className="text-white/40 text-xs">{totalTags} interest tags</span>
             </div>
 
             {/* Completeness bar */}
@@ -160,8 +160,8 @@ export default function ProfileTab() {
             border: '1px solid rgba(255, 45, 120, 0.15)',
             color: 'rgba(255, 45, 120, 0.8)',
           }}>
-          <span className="text-lg">🚫</span>
-          <span>Face photos are not allowed. Your identity stays fully anonymous.</span>
+          <span className="text-lg">🙈</span>
+          <span>Your face is never shown here — not now, not ever. Only your interests and personality matter on VibeMatch.</span>
         </div>
       </div>
 

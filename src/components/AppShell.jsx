@@ -122,8 +122,8 @@ export default function AppShell() {
                     color: 'rgba(0,245,212,0.85)',
                   }}
                 >
-                  <span>🔒</span>
-                  <span className="hidden sm:inline">Anonymous</span>
+                  <span>🙈</span>
+                  <span className="hidden sm:inline">Face-free</span>
                 </div>
                 {notifications > 0 && (
                   <div className="relative">
