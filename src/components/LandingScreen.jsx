@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import { useAuth } from '../context/AuthContext';
 import AuthModal from './AuthModal';
+import FeatureShowcase from './FeatureShowcase';
 
 const AGE_GATE_KEY = 'vibematch_age_verified';
 
@@ -270,6 +271,9 @@ export default function LandingScreen() {
           ))}
         </div>
       </main>
+
+      {/* Feature Showcase */}
+      <FeatureShowcase />
 
       {/* Stats bar */}
       <div className="relative z-10 border-t border-white/5 py-4 sm:py-6 px-5 sm:px-8 pb-safe">
